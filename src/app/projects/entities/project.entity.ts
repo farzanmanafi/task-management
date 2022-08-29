@@ -15,7 +15,7 @@ export class Project extends BaseEntity {
   @Column('enum', {
     enum: ProjectStatusEnum,
   })
-  status: string;
+  status: ProjectStatusEnum;
 
   @Column({ type: 'date' })
   startDate: Date;

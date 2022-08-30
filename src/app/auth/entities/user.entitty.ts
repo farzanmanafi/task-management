@@ -8,6 +8,7 @@ import {
 import { classToPlain, Exclude } from 'class-transformer';
 
 import { UserGenderEnum } from '../enum/user-gender.enum';
+import * as bcrypt from 'bcrypt';
 
 @Entity()
 @Unique(['username', 'email'])
@@ -47,4 +48,9 @@ export class User extends BaseEntity {
 
   @Column({ default: false })
   isVerified: boolean;
+
+  async validatePassword(password: string): Promise<boolean> {
+    const hash = await bcrypt.hash(password, this.salt);
+    return hash === this.password;
+  }
 }

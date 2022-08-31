@@ -4,11 +4,13 @@ import {
   Column,
   Entity,
   Unique,
+  OneToMany,
 } from 'typeorm';
 import { classToPlain, Exclude } from 'class-transformer';
 
 import { UserGenderEnum } from '../enum/user-gender.enum';
 import * as bcrypt from 'bcrypt';
+import { Task } from 'src/app/tasks/entities/task.entity';
 
 @Entity()
 @Unique(['username', 'email'])
@@ -48,6 +50,9 @@ export class User extends BaseEntity {
 
   @Column({ default: false })
   isVerified: boolean;
+
+  @OneToMany((type) => Task, (task) => task.user, { eager: true })
+  tasks: Task[];
 
   async validatePassword(password: string): Promise<boolean> {
     const hash = await bcrypt.hash(password, this.salt);

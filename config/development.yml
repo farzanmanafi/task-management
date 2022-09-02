@@ -1,0 +1,15 @@
+db:
+  host: 'localhost'
+  type: 'postgres'
+  port: 5432
+  database: 'taskmanagement'
+  username: 'farzan'
+  password: '1360399712'
+  synchronize: true
+
+jwt:
+  secret: 'topSecret51'
+  expireIn: 3600
+
+server:
+  port: 3000

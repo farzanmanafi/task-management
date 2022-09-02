@@ -1,5 +1,0 @@
-db:
-  synchronize: false
-
-server:
-  port: 3000

@@ -9,7 +9,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import * as bcrypt from 'bcrypt';
 
 @EntityRepository(User)
-export class UserReppsitory extends Repository<User> {
+export class UserRepository extends Repository<User> {
   async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     try {
       const {
@@ -45,5 +45,14 @@ export class UserReppsitory extends Repository<User> {
 
   private async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
+  }
+
+  async validateUserPassword(
+    authCredentialsDto: AuthCredentialsDto,
+  ): Promise<string> {
+    const { username, password } = authCredentialsDto;
+    const user = await this.findOne({ where: { username } });
+    if (user && (await user.validatePassword(password))) return user.username;
+    return null;
   }
 }

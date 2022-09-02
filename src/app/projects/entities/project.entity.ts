@@ -1,6 +1,7 @@
-import { BaseEntity, Column, OneToMany } from 'typeorm';
+import { BaseEntity, Column, OneToMany, ManyToOne } from 'typeorm';
 import { Task } from 'src/app/tasks/entities/task.entity';
 import { ProjectStatusEnum } from '../enum/project-status.enum';
+import { User } from 'src/app/auth/entities/user.entitty';
 
 export class Project extends BaseEntity {
   @Column()
@@ -25,4 +26,10 @@ export class Project extends BaseEntity {
 
   @OneToMany(() => Task, (task) => task.project)
   projectTasks: Task[];
+
+  @ManyToOne((type) => User, (user) => user.projects, { eager: false })
+  user: User;
+
+  @Column()
+  userId: number;
 }

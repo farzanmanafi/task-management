@@ -6,6 +6,7 @@ import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { TaskRepository } from './task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Task } from './entities/task.entity';
+import { User } from '../auth/entities/user.entitty';
 @Injectable()
 export class TasksService {
   constructor(
@@ -13,29 +14,35 @@ export class TasksService {
     private taskRepository: TaskRepository,
   ) {}
 
-  getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
-    return this.taskRepository.getTasks(filterDto);
+  getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
+    return this.taskRepository.getTasks(filterDto, user);
   }
 
-  async getTaskById(id: number): Promise<Task> {
-    const found = await this.taskRepository.findOneById(+id);
+  async getTaskById(id: number, user: User): Promise<Task> {
+    const found = await this.taskRepository.findOne({
+      where: { id: +id, userId: user.id },
+    });
     if (!found) throw new NotFoundException(`Task with ID: ${id} not found!`);
     return found;
   }
 
-  async createTask(createTaskDto: CreateTaskDto): Promise<Task> {
-    return this.taskRepository.createTask(createTaskDto);
+  async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
+    return this.taskRepository.createTask(createTaskDto, user);
   }
 
-  async updateTaskStatus(id: number, status: TaskStatusEnum): Promise<Task> {
-    const task = await this.getTaskById(id);
+  async updateTaskStatus(
+    id: number,
+    status: TaskStatusEnum,
+    user: User,
+  ): Promise<Task> {
+    const task = await this.getTaskById(id, user);
     task.status = status;
     await task.save();
     return task;
   }
 
-  async deleteTask(id: number): Promise<void> {
-    const found = await this.getTaskById(id);
-    if (found) await this.taskRepository.delete(id);
+  async deleteTask(id: number, user: User): Promise<void> {
+    const found = await this.getTaskById(id, user);
+    if (found) await this.taskRepository.delete({ id: +id, userId: user.id });
   }
 }

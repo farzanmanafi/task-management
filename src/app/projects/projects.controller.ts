@@ -9,6 +9,7 @@ import {
   UsePipes,
   ValidationPipe,
   ParseIntPipe,
+  Logger,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -20,6 +21,8 @@ import { User } from '../auth/entities/user.entitty';
 
 @Controller('projects')
 export class ProjectsController {
+  private logger = new Logger('ProjectsController');
+
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
@@ -28,6 +31,11 @@ export class ProjectsController {
     @Body() createProjectDto: CreateProjectDto,
     @GetUser() user: User,
   ): Promise<Project> {
+    this.logger.verbose(
+      `User "${user.username}" creating a new Project. Data: ${JSON.stringify(
+        createProjectDto,
+      )}.`,
+    );
     return this.projectsService.createProject(createProjectDto, user);
   }
 
@@ -36,6 +44,9 @@ export class ProjectsController {
     filterDto: GetProjectFilterDto,
     @GetUser() user: User,
   ): Promise<Project[]> {
+    this.logger.verbose(
+      `User "${user.username}" retriving all Projects ${filterDto}`,
+    );
     return this.projectsService.getProjects(filterDto, user);
   }
 
@@ -44,6 +55,9 @@ export class ProjectsController {
     @Param('id', ParseIntPipe) id: number,
     @GetUser() user: User,
   ): Promise<Project> {
+    this.logger.verbose(
+      `User "${user.username}" retrivinga  task with Id: ${id}.`,
+    );
     return this.projectsService.getProjectById(+id, user);
   }
 
@@ -53,11 +67,19 @@ export class ProjectsController {
     @Body() updateProjectDto: UpdateProjectDto,
     @GetUser() user: User,
   ): Promise<Project> {
+    this.logger.verbose(
+      `User "${user.username}" updating a task. Data: ${JSON.stringify(
+        updateProjectDto,
+      )}.`,
+    );
     return this.projectsService.updateProject(+id, updateProjectDto, user);
   }
 
   @Delete(':id')
   remove(@Param('id') id: number, user): Promise<void> {
+    this.logger.verbose(
+      `User "${user.username}" delete a task with Id: ${id}.}.`,
+    );
     return this.projectsService.deleteProject(+id, user);
   }
 }

@@ -1,6 +1,8 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import * as config from 'config';
 
+//RDS stand for relational database service, it is a service in AWS and it is used as a database for production
+
 const dbConfig = config.get('db');
 export const typeOrmConfig: TypeOrmModuleOptions = {
   type: dbConfig.type,
@@ -12,5 +14,3 @@ export const typeOrmConfig: TypeOrmModuleOptions = {
   entities: [__dirname + '/../**/*.entity.ts'],
   synchronize: process.env.RDS_TYPEORM_SYNC || dbConfig.synchronize,
 };
-
-//RDS stand for relational database service, it is a service in AWS and it is used as a database for production

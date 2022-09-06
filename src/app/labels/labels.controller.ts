@@ -17,7 +17,7 @@ import { UpdateLabelDto } from './dto/update-label.dto';
 import { GetLabelFilterDto } from './dto/get-labels-filter.dto';
 import { Label } from './entities/label.entity';
 import { GetUser } from '../auth/decorator/get-user.dec';
-import { User } from '../auth/entities/user.entitty';
+import { User } from '../auth/entities/user.entity';
 
 @Controller('labels')
 export class LabelsController {

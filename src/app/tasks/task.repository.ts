@@ -3,7 +3,7 @@ import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { TaskStatusEnum } from './enum/tasks-status.enum';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
-import { User } from '../auth/entities/user.entitty';
+import { User } from '../auth/entities/user.entity';
 import { Delete, Logger, InternalServerErrorException } from '@nestjs/common';
 
 //TODO read repository pattern

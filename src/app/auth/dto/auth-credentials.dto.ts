@@ -43,7 +43,7 @@ export class AuthCredentialsDto {
   @Matches(dateRegex)
   birthday?: Date;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsEnum(UserGenderEnum)
   gender: UserGenderEnum;
 

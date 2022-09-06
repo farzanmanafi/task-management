@@ -1,10 +1,18 @@
-import { BaseEntity, Column, OneToMany, ManyToOne } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  OneToMany,
+  ManyToOne,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Task } from 'src/app/tasks/entities/task.entity';
 import { ProjectStatusEnum } from '../enum/project-status.enum';
-import { User } from 'src/app/auth/entities/user.entitty';
+import { User } from 'src/app/auth/entities/user.entity';
 
+@Entity()
 export class Project extends BaseEntity {
-  @Column()
+  @PrimaryGeneratedColumn()
   id: number;
 
   @Column()

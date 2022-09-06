@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { ProjectRepository } from './project.repository';
 import { GetProjectFilterDto } from './dto/get-project-filter.dto';
 import { Project } from './entities/project.entity';
-import { User } from '../auth/entities/user.entitty';
+import { User } from '../auth/entities/user.entity';
 
 @Injectable()
 export class ProjectsService {

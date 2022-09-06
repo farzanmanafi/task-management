@@ -31,7 +31,7 @@ export class User extends BaseEntity {
   @Column({ length: 50 })
   lastname: string;
 
-  @Column({ length: 20 })
+  @Column()
   @Exclude()
   password: string;
 

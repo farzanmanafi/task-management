@@ -5,7 +5,7 @@ import { GetProjectFilterDto } from './dto/get-project-filter.dto';
 
 import { ProjectStatusEnum } from './enum/project-status.enum';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { User } from '../auth/entities/user.entitty';
+import { User } from '../auth/entities/user.entity';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 
 @EntityRepository(Project)

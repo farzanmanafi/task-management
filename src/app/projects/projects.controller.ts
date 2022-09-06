@@ -17,7 +17,7 @@ import { UpdateProjectDto } from './dto/update-project.dto';
 import { GetProjectFilterDto } from './dto/get-project-filter.dto';
 import { Project } from './entities/project.entity';
 import { GetUser } from '../auth/decorator/get-user.dec';
-import { User } from '../auth/entities/user.entitty';
+import { User } from '../auth/entities/user.entity';
 
 @Controller('projects')
 export class ProjectsController {

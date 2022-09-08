@@ -33,9 +33,14 @@ export class Project extends BaseEntity {
   endDate: Date;
 
   @OneToMany(() => Task, (task) => task.project)
-  projectTasks: Task[];
+  tasks!: Task[];
 
-  @ManyToOne((type) => User, (user) => user.projects, { eager: false })
+  @ManyToOne((type) => User, (user) => user.projects, {
+    cascade: true,
+    eager: false,
+    onDelete: 'CASCADE',
+    nullable: false,
+  })
   user: User;
 
   @Column()

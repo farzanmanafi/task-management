@@ -4,6 +4,7 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Entity,
+  ManyToOne,
 } from 'typeorm';
 import { Task } from 'src/app/tasks/entities/task.entity';
 
@@ -15,6 +16,6 @@ export class Label extends BaseEntity {
   @Column()
   name: string;
 
-  @ManyToMany(() => Task, (task) => task.taskLabels)
-  label!: Task;
+  @ManyToOne(() => Task, (task) => task.labels)
+  task: Task;
 }

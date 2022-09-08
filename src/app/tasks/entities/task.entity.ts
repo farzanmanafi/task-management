@@ -44,11 +44,11 @@ export class Task extends BaseEntity {
   })
   issueType: TaskIssueTypeEnum;
 
-  @ManyToOne(() => Project, (project) => project.projectTasks)
+  @ManyToOne(() => Project, (project) => project.tasks)
   project!: Project;
 
-  @OneToMany(() => Label, (task) => task.label)
-  taskLabels: Label[];
+  @OneToMany(() => Label, (label) => label.task)
+  labels!: Label[];
 
   @ManyToOne((type) => User, (user) => user.tasks, { eager: false })
   user: User;

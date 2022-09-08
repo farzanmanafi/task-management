@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { UserGenderEnum } from '../enum/user-gender.enum';
 import { dateRegex } from 'src/shared/helper';
+import { UserTypeEnum } from '../enum/user-role-enum';
 
 export class AuthCredentialsDto {
   @IsNotEmpty()
@@ -20,16 +21,16 @@ export class AuthCredentialsDto {
   username: string;
 
   @IsNotEmpty()
-  @IsString()
-  @MinLength(4)
+  @MinLength(8)
   @MaxLength(20)
-  @Matches(/^(?=.*[A-Za-z])(?=.*d)[A-Za-zd]{8,}$/, {
-    message: 'Password is too week!',
-  }) // Minimum eight characters, at least one letter and one number
   password: string;
 
   @IsEmail({}, { message: 'Please enter a valid email address.' })
   email: string;
+
+  @IsOptional()
+  @IsEnum(UserTypeEnum)
+  role: UserTypeEnum;
 
   @IsString()
   @MinLength(3)

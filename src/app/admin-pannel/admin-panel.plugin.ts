@@ -9,6 +9,7 @@ import {
 export const adminJSOptions: AdminJSOptions = {
   rootPath: '/admin',
   dashboard: {},
+  databases: [],
   resources: [LabelResource, UserResource, ProjectResource, TaskResource],
   locale: {
     language: 'en',
@@ -23,8 +24,8 @@ export const adminJSOptions: AdminJSOptions = {
     },
   },
   branding: {
-    companyName: 'MatchMe',
+    companyName: 'Task-Managment',
     softwareBrothers: false,
-    logo: '../../uploads/logo/logo.png',
+    logo: '',
   },
 };

@@ -6,12 +6,13 @@ import {
   Unique,
   OneToMany,
 } from 'typeorm';
-import { classToPlain, Exclude } from 'class-transformer';
+import { Exclude } from 'class-transformer';
 
 import { UserGenderEnum } from '../enum/user-gender.enum';
 import * as bcrypt from 'bcrypt';
 import { Task } from 'src/app/tasks/entities/task.entity';
 import { Project } from 'src/app/projects/entities/project.entity';
+import { UserTypeEnum } from '../enum/user-role-enum';
 
 @Entity()
 @Unique(['username', 'email'])
@@ -21,6 +22,9 @@ export class User extends BaseEntity {
 
   @Column({ length: 100 })
   email: string;
+
+  @Column('enum', { enum: UserTypeEnum, default: UserTypeEnum.USER })
+  role: UserTypeEnum;
 
   @Column({ length: 50 })
   username: string;

@@ -1,5 +1,6 @@
 export enum UserGenderEnum {
-  WOMANE = 'WOMANE',
-  MAN = 'MAN',
-  OTHER = 'OTHER',
+  MALE = 'male',
+  FEMALE = 'female',
+  OTHER = 'other',
+  PREFER_NOT_TO_SAY = 'prefer_not_to_say',
 }

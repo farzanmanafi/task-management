@@ -1,0 +1,18 @@
+New Task Assigned - {{taskTitle}}
+
+Hello,
+
+You have been assigned a new task by {{assignedBy}}.
+
+Task: {{taskTitle}}
+
+You can view the task details and start working on it by visiting:
+{{taskUrl}}
+
+If you have any questions about this task, please contact {{assignedBy}} or your project manager.
+
+Best regards,
+Task Management Team
+
+---
+This is an automated email. Please do not reply to this message.

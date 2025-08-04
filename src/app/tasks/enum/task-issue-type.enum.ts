@@ -1,6 +1,9 @@
 export enum TaskIssueTypeEnum {
-  FEATURE = 'FEATURE',
-  BUG = 'BUG',
-  IMPROVMENT = 'IMPROVMENT',
-  CLIENT_REJECT = 'CLIENT_REJECT',
+  FEATURE = 'feature',
+  BUG = 'bug',
+  IMPROVEMENT = 'improvement',
+  DOCUMENTATION = 'documentation',
+  REFACTORING = 'refactoring',
+  TESTING = 'testing',
+  CLIENT_FEEDBACK = 'client_feedback',
 }

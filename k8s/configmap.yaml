@@ -1,0 +1,15 @@
+# k8s/configmap.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: task-management-config
+  namespace: task-management
+data:
+  NODE_ENV: 'production'
+  PORT: '3000'
+  DB_HOST: 'postgres-service'
+  DB_PORT: '5432'
+  DB_DATABASE: 'taskmanagement'
+  REDIS_HOST: 'redis-service'
+  REDIS_PORT: '6379'
+  REDIS_DB: '0'

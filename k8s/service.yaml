@@ -1,0 +1,15 @@
+---
+# k8s/service.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-management-api-service
+  namespace: task-management
+spec:
+  selector:
+    app: task-management-api
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 3000
+  type: ClusterIP

@@ -15,31 +15,22 @@ import * as bcrypt from 'bcrypt';
 import AdminJs from 'adminjs';
 import { adminJSOptions } from './app/admin-pannel/admin-panel.plugin';
 import { User } from './app/auth/entities/user.entity';
-
+import { getDatabaseConfig } from './config/database.config';
+import { EventEmitterModule } from '@nestjs/event-emitter';
+import { CacheModule } from './app/shared/cache/cache.module';
 AdminJs.registerAdapter({ Database, Resource });
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    EventEmitterModule.forRoot(),
+    CacheModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        name: 'default',
-        type: 'postgres',
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_DATABASE'),
-        entities: ['dist/**/*.entity{ .ts,.js}'],
-        synchronize: false,
-        migrations: ['dist/db/migrations/*{.ts,.js}'],
-        migrationsTableName: 'migrations',
-        migrationsRun: false,
-        cli: {
-          migrationsDir: 'src/db/migrations',
-        },
-      }),
+      useFactory: (configService: ConfigService) =>
+        getDatabaseConfig(configService),
       inject: [ConfigService],
     }),
     TasksModule,

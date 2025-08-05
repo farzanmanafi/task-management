@@ -1,4 +1,3 @@
-// src/shared/interceptors/response.interceptor.ts
 import {
   Injectable,
   NestInterceptor,

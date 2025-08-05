@@ -29,7 +29,7 @@ import { TaskStatusEnum } from '../enum/tasks-status.enum';
 import { TaskActivityService } from './task-activity.service';
 import { TaskPriorityEnum } from '../enum/task-priority.enum';
 import { UserRoleEnum } from 'src/app/auth/enum/user-role-enum';
-import { CacheService } from 'src/app/shared/cache/cache.service';
+import { CacheService } from 'src/shared/cache/cache.service';
 
 @Injectable()
 export class TaskService implements TaskServiceInterface {

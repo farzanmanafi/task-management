@@ -1,5 +1,4 @@
 import {
-  WebSocketGateway,
   WebSocketServer,
   SubscribeMessage,
   OnGatewayConnection,
@@ -7,7 +6,9 @@ import {
   OnGatewayInit,
   MessageBody,
   ConnectedSocket,
+  WebSocketGateway,
 } from '@nestjs/websockets';
+
 import { Server, Socket } from 'socket.io';
 import { Logger, UseGuards } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
@@ -16,6 +17,7 @@ import { UserRepository } from '../app/auth/repositories/user.repository';
 import { WsAuthGuard } from './guards/ws-auth.guard';
 import { CurrentUser } from '../app/auth/decorators/current-user.decorator';
 import { User } from '../app/auth/entities/user.entity';
+import { CacheService } from 'src/shared/cache/cache.service';
 
 interface ConnectedClient {
   id: string;

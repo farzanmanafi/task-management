@@ -1,17 +1,16 @@
-import { ResourceWithOptions } from 'adminjs';
-import { Label } from 'src/app/labels/entities/label.entity';
+import { ResourceOptions } from 'adminjs';
+import { Label } from '../../labels/entities/label.entity';
 
-export const LabelResource: ResourceWithOptions = {
+export const LabelResource = {
   resource: Label,
   options: {
-    actions: {
-      // list: { icon: 'Add', isVisible: true },
-      // edit: { icon: 'Add', isVisible: false },
-      // delete: { icon: 'Add', isVisible: false },
-      // new: { icon: 'Add', isVisible: false },
-      // bulkDelete: { icon: 'Add', isVisible: false },
+    parent: {
+      name: 'Configuration',
+      icon: 'Tag',
     },
-  },
-  features: [],
+    listProperties: ['id', 'name'],
+    showProperties: ['id', 'name'],
+    editProperties: ['name'],
+    filterProperties: ['name'],
+  } as ResourceOptions,
 };
-export default LabelResource;

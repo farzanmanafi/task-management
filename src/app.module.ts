@@ -1,24 +1,27 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppService } from './app.service';
 import { TasksModule } from './app/tasks/tasks.module';
 import { ProjectsModule } from './app/projects/projects.module';
 import { LabelsModule } from './app/labels/labels.module';
 import { AuthModule } from './app/auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { ConfigService } from '@nestjs/config';
-import { AdminModule } from '@adminjs/nestjs';
-import { Database, Resource } from '@adminjs/typeorm';
 
 import * as bcrypt from 'bcrypt';
 
-import AdminJs from 'adminjs';
-import { adminJSOptions } from './app/admin-pannel/admin-panel.plugin';
 import { User } from './app/auth/entities/user.entity';
 import { getDatabaseConfig } from './config/database.config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
-import { CacheModule } from './app/shared/cache/cache.module';
-AdminJs.registerAdapter({ Database, Resource });
+import { CacheModule } from './shared/cache/cache.module';
+import { AppService } from './app.service';
+
+import { AdminModule } from '@adminjs/nestjs';
+import AdminJS from 'adminjs';
+import { Database, Resource } from '@adminjs/typeorm';
+import { adminJSOptions } from './app/admin-pannel/admin-panel.plugin';
+
+// Register the adapter
+AdminJS.registerAdapter({ Database, Resource });
 
 @Module({
   imports: [
@@ -40,29 +43,42 @@ AdminJs.registerAdapter({ Database, Resource });
     AdminModule.createAdminAsync({
       inject: [ConfigService],
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService): any => ({
+      useFactory: (configService: ConfigService) => ({
         adminJsOptions: adminJSOptions,
         auth: {
-          cookieName: configService.get<string>('ADMIN_EMAIL'),
-          cookiePassword: configService.get<string>('ADMIN_PASSWORD'),
-          authenticate: async (email, password) => {
-            const user = await User.findOne({
-              where: { email },
-            });
-            if (!user) {
-              return false;
+          cookieName: 'adminjs',
+          cookiePassword:
+            configService.get<string>('COOKIE_SECRET') ||
+            'some-secret-password',
+          authenticate: async (email: string, password: string) => {
+            try {
+              const user = await User.findOne({ where: { email } });
+              if (!user) return null;
+
+              const isValidPassword = await bcrypt.compare(
+                password,
+                user.password,
+              );
+              if (isValidPassword && user.role === 'admin') {
+                return {
+                  email: user.email,
+                  title: user.fullName,
+                  role: user.role,
+                };
+              }
+              return null;
+            } catch (error) {
+              console.error('Admin auth error:', error);
+              return null;
             }
-            const isValidPass = await bcrypt.compare(password, user.password);
-            if (user.role === 'ADMIN' && isValidPass) {
-              return Promise.resolve({ email });
-            }
-            return false;
           },
         },
-        predefinedRouter: null,
         sessionOptions: {
           resave: false,
           saveUninitialized: true,
+          secret:
+            configService.get<string>('COOKIE_SECRET') ||
+            'some-secret-password',
         },
       }),
     }),

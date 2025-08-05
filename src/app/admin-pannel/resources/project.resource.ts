@@ -1,17 +1,37 @@
-import { ResourceWithOptions } from 'adminjs';
-import { Project } from 'src/app/projects/entities/project.entity';
+// src/app/admin-panel/resources/project.resource.ts - UPDATED
+import { ResourceOptions } from 'adminjs';
+import { Project } from '../../projects/entities/project.entity';
 
-export const ProjectResource: ResourceWithOptions = {
+export const ProjectResource = {
   resource: Project,
   options: {
-    actions: {
-      // list: { icon: 'Add', isVisible: true },
-      // edit: { icon: 'Add', isVisible: false },
-      // delete: { icon: 'Add', isVisible: false },
-      // new: { icon: 'Add', isVisible: false },
-      // bulkDelete: { icon: 'Add', isVisible: false },
+    parent: {
+      name: 'Project Management',
+      icon: 'Folder',
     },
-  },
-  features: [],
+    listProperties: ['id', 'name', 'status', 'userId', 'startDate', 'endDate'],
+    showProperties: [
+      'id',
+      'name',
+      'description',
+      'status',
+      'userId',
+      'startDate',
+      'endDate',
+      'createdAt',
+    ],
+    editProperties: ['name', 'description', 'status', 'startDate', 'endDate'],
+    filterProperties: ['status', 'userId'],
+    properties: {
+      description: {
+        type: 'textarea',
+      },
+      startDate: {
+        type: 'date',
+      },
+      endDate: {
+        type: 'date',
+      },
+    },
+  } as ResourceOptions,
 };
-export default ProjectResource;

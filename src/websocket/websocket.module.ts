@@ -1,10 +1,11 @@
-// src/websocket/websocket.module.ts
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { WebSocketGateway } from './websocket.gateway';
+import { WebSocketService } from './websocket.service';
 import { WsAuthGuard } from './guards/ws-auth.guard';
 import { AuthModule } from '../app/auth/auth.module';
+import { CacheModule } from '../shared/cache/cache.module';
 
 @Module({
   imports: [
@@ -19,8 +20,9 @@ import { AuthModule } from '../app/auth/auth.module';
       inject: [ConfigService],
     }),
     AuthModule,
+    CacheModule,
   ],
-  providers: [WebSocketGateway, WsAuthGuard],
-  exports: [WebSocketGateway],
+  providers: [WebSocketGateway, WebSocketService, WsAuthGuard],
+  exports: [WebSocketGateway, WebSocketService],
 })
 export class WebSocketModule {}

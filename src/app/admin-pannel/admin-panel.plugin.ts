@@ -1,4 +1,4 @@
-import AdminJS, { AdminJSOptions } from 'adminjs';
+import { AdminJSOptions } from 'adminjs';
 import {
   LabelResource,
   UserResource,
@@ -8,24 +8,36 @@ import {
 
 export const adminJSOptions: AdminJSOptions = {
   rootPath: '/admin',
-  dashboard: {},
-  databases: [],
-  resources: [LabelResource, UserResource, ProjectResource, TaskResource],
+  dashboard: {
+    component: false, // Disable custom dashboard for now
+  },
+  resources: [UserResource, TaskResource, ProjectResource, LabelResource],
   locale: {
     language: 'en',
+    availableLanguages: ['en'],
     translations: {
-      labels: {
-        // change Heading for Login
-        loginWelcome: 'Welcome to Task-Management',
-      },
-      messages: {
-        loginWelcome: '',
+      en: {
+        labels: {
+          loginWelcome: 'Welcome to Task Management Admin',
+        },
+        messages: {
+          loginWelcome: '',
+        },
       },
     },
   },
   branding: {
-    companyName: 'Task-Managment',
+    companyName: 'Task Management System',
     softwareBrothers: false,
-    logo: '',
+    logo: false,
+    favicon: '/favicon.ico',
+    theme: {
+      colors: {
+        primary100: '#3b82f6',
+        primary80: '#60a5fa',
+        primary60: '#93c5fd',
+      },
+    },
   },
+  pages: {},
 };

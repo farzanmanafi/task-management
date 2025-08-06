@@ -9,7 +9,7 @@ import { Project } from '../../src/app/projects/entities/project.entity';
 import { Label } from '../../src/app/labels/entities/label.entity';
 
 import * as bcrypt from 'bcrypt';
-import { UserRoleEnum } from 'src/app/auth/enum/user-role-enum';
+import { UserRoleEnum } from '@/app/auth/enum/user-role.enum';
 import { TaskStatusEnum } from 'src/app/tasks/enum/tasks-status.enum';
 import { TaskPriorityEnum } from 'src/app/tasks/enum/task-priority.enum';
 import { TaskIssueTypeEnum } from 'src/app/tasks/enum/task-issue-type.enum';

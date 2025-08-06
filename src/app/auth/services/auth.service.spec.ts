@@ -1,14 +1,11 @@
-// src/app/auth/services/auth.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { ConflictException, UnauthorizedException } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UserRepository } from '../repositories/user.repository';
-import { User } from '../entities/user.entity';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginDto } from '../dto/login.dto';
-import { UserRoleEnum } from '../enums/user-role.enum';
 import { TestUtils } from '../../../../test/utils/test-utils';
 
 describe('AuthService', () => {

@@ -1,4 +1,3 @@
-// src/app/auth/dto/create-user.dto.ts
 import {
   IsEmail,
   IsNotEmpty,
@@ -13,8 +12,7 @@ import {
   ValidateIf,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { UserRoleEnum } from '../enums/user-role.enum';
-import { UserGenderEnum } from '../enums/user-gender.enum';
+import { UserGenderEnum, UserRoleEnum } from '../enum';
 
 export class CreateUserDto {
   @ApiProperty({

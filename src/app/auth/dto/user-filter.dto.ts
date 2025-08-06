@@ -1,7 +1,7 @@
 import { IsOptional, IsEnum, IsString, MaxLength } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { BaseFilterDto } from '../../../shared/dto/base-filter.dto';
-import { UserRoleEnum } from '../enums/user-role.enum';
+import { UserRoleEnum } from '../enum';
 
 export class UserFilterDto extends BaseFilterDto {
   @ApiPropertyOptional({

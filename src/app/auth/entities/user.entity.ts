@@ -11,13 +11,18 @@ import {
   BeforeUpdate,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { IsEmail, IsNotEmpty, IsPhoneNumber, IsEnum, IsOptional } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsPhoneNumber,
+  IsEnum,
+  IsOptional,
+} from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
 import { Task } from '../../tasks/entities/task.entity';
 import { Project } from '../../projects/entities/project.entity';
-import { UserGenderEnum } from '../enums/user-gender.enum';
-import { UserRoleEnum } from '../enums/user-role.enum';
+import { UserGenderEnum, UserRoleEnum } from '../enum';
 
 @Entity('users')
 @Index(['email'], { unique: true })
@@ -100,9 +105,12 @@ export class User {
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deletedAt: Date;
 
-  // Relationships
-  @OneToMany(() => Task, (task) => task.user, { lazy: true })
-  tasks: Promise<Task[]>;
+  // Relationships - Fixed to match Task entity relationships
+  @OneToMany(() => Task, (task) => task.createdBy, { lazy: true })
+  createdTasks: Promise<Task[]>;
+
+  @OneToMany(() => Task, (task) => task.assignee, { lazy: true })
+  assignedTasks: Promise<Task[]>;
 
   @OneToMany(() => Project, (project) => project.user, { lazy: true })
   projects: Promise<Project[]>;

@@ -1,4 +1,3 @@
-// src/app/auth/controllers/auth.controller.ts
 import {
   Controller,
   Post,
@@ -21,7 +20,8 @@ import {
   ApiResponse,
   ApiBody,
   ApiBearerAuth,
-  ApiRateLimiting,
+  // Remove the incorrect import - this decorator doesn't exist
+  // ApiRateLimiting,
 } from '@nestjs/swagger';
 
 import { AuthService } from '../services/auth.service';
@@ -36,7 +36,7 @@ import { JwtAuthGuard } from '../guards/jwt-auth.guard';
 @ApiTags('Authentication')
 @Controller('auth')
 @UseGuards(ThrottlerGuard)
-@ApiRateLimiting({ limit: 20, ttl: 60 })
+// @ApiRateLimiting({ limit: 20, ttl: 60 }) // Remove this as it doesn't exist
 export class AuthController {
   private readonly logger = new Logger(AuthController.name);
 

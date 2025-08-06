@@ -1,4 +1,4 @@
-import { UserRoleEnum } from '../enums/user-role.enum';
+import { UserRoleEnum } from '../enum';
 
 export interface JwtPayload {
   sub: string; // user id

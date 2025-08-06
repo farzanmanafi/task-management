@@ -10,23 +10,26 @@ import {
   ValidationPipe,
   ParseIntPipe,
   Logger,
+  UseGuards,
 } from '@nestjs/common';
 import { LabelsService } from './labels.service';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { UpdateLabelDto } from './dto/update-label.dto';
 import { GetLabelFilterDto } from './dto/get-labels-filter.dto';
 import { Label } from './entities/label.entity';
-import { GetUser } from '../auth/decorator/get-user.dec';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../auth/entities/user.entity';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('labels')
+@UseGuards(JwtAuthGuard)
 export class LabelsController {
-  private logger = new Logger('ProjectsController');
+  private logger = new Logger('LabelsController');
   constructor(private readonly labelsService: LabelsService) {}
 
   @Post()
   @UsePipes(ValidationPipe)
-  create(@Body() createLabelDto: CreateLabelDto, @GetUser() user: User) {
+  create(@Body() createLabelDto: CreateLabelDto, @CurrentUser() user: User) {
     this.logger.verbose(
       `User "${user.username}" creating a new label. Data: ${JSON.stringify(
         createLabelDto,
@@ -38,10 +41,10 @@ export class LabelsController {
   @Get()
   findAll(
     filterDto: GetLabelFilterDto,
-    @GetUser() user: User,
+    @CurrentUser() user: User,
   ): Promise<Label[]> {
     this.logger.verbose(
-      `User "${user.username}" retriving all labels ${filterDto}`,
+      `User "${user.username}" retrieving all labels ${JSON.stringify(filterDto)}`,
     );
     return this.labelsService.getLabels(filterDto);
   }
@@ -49,10 +52,10 @@ export class LabelsController {
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: User,
+    @CurrentUser() user: User,
   ): Promise<Label> {
     this.logger.verbose(
-      `User "${user.username}" retrivinga a label with Id: ${id}.`,
+      `User "${user.username}" retrieving a label with Id: ${id}.`,
     );
     return this.labelsService.getLabelById(+id);
   }
@@ -61,7 +64,7 @@ export class LabelsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateLabelDto: UpdateLabelDto,
-    @GetUser() user: User,
+    @CurrentUser() user: User,
   ): Promise<Label> {
     this.logger.verbose(
       `User "${user.username}" updating a label. Data: ${JSON.stringify(
@@ -72,9 +75,9 @@ export class LabelsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string, @GetUser() user: User): Promise<void> {
+  remove(@Param('id') id: string, @CurrentUser() user: User): Promise<void> {
     this.logger.verbose(
-      `User "${user.username}" delete a label with Id: ${id}.}.`,
+      `User "${user.username}" deleting a label with Id: ${id}.`,
     );
     return this.labelsService.deleteLabel(+id);
   }

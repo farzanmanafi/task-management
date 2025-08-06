@@ -8,9 +8,7 @@ import {
 
 export const adminJSOptions: AdminJSOptions = {
   rootPath: '/admin',
-  dashboard: {
-    component: false, // Disable custom dashboard for now
-  },
+  dashboard: {},
   resources: [UserResource, TaskResource, ProjectResource, LabelResource],
   locale: {
     language: 'en',
@@ -28,7 +26,6 @@ export const adminJSOptions: AdminJSOptions = {
   },
   branding: {
     companyName: 'Task Management System',
-    softwareBrothers: false,
     logo: false,
     favicon: '/favicon.ico',
     theme: {

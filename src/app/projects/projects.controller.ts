@@ -16,7 +16,7 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { GetProjectFilterDto } from './dto/get-project-filter.dto';
 import { Project } from './entities/project.entity';
-import { GetUser } from '../auth/decorator/get-user.dec';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { User } from '../auth/entities/user.entity';
 
 @Controller('projects')
@@ -29,7 +29,7 @@ export class ProjectsController {
   @UsePipes(ValidationPipe)
   create(
     @Body() createProjectDto: CreateProjectDto,
-    @GetUser() user: User,
+    @CurrentUser() user: User,
   ): Promise<Project> {
     this.logger.verbose(
       `User "${user.username}" creating a new Project. Data: ${JSON.stringify(
@@ -42,7 +42,7 @@ export class ProjectsController {
   @Get()
   findAll(
     filterDto: GetProjectFilterDto,
-    @GetUser() user: User,
+    @CurrentUser() user: User,
   ): Promise<Project[]> {
     this.logger.verbose(
       `User "${user.username}" retriving all Projects ${filterDto}`,
@@ -53,7 +53,7 @@ export class ProjectsController {
   @Get(':id')
   findOne(
     @Param('id', ParseIntPipe) id: number,
-    @GetUser() user: User,
+    @CurrentUser() user: User,
   ): Promise<Project> {
     this.logger.verbose(
       `User "${user.username}" retrivinga  task with Id: ${id}.`,
@@ -65,7 +65,7 @@ export class ProjectsController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProjectDto: UpdateProjectDto,
-    @GetUser() user: User,
+    @CurrentUser() user: User,
   ): Promise<Project> {
     this.logger.verbose(
       `User "${user.username}" updating a task. Data: ${JSON.stringify(

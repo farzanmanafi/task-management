@@ -1,9 +1,10 @@
+// src/database/seeds/user.seed.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../app/auth/entities/user.entity';
-import { UserRoleEnum } from '../../app/auth/enums/user-role.enum';
-import { UserGenderEnum } from '../../app/auth/enums/user-gender.enum';
+import { UserRoleEnum } from '../../app/auth/enum/user-role.enum';
+import { UserGenderEnum } from '../../app/auth/enum/user-gender.enum';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

@@ -8,8 +8,7 @@ import { setupSwagger } from './config/swagger.config';
 import { AppConfigService } from './config/config.service';
 import helmet from 'helmet';
 import compression from 'compression';
-// import { RequestIdMiddleware } from './shared/middleware/request-id.middleware';
-// import { LoggerMiddleware } from './shared/middleware/logger.middleware';
+
 import { setupBullBoard } from './queue/bull-board.setup';
 import { QueueService } from './queue/queue.service';
 

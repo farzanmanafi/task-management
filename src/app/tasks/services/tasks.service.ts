@@ -25,11 +25,11 @@ import {
   TaskStats,
 } from '../interfaces/task-service.interface';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { TaskStatusEnum } from '../enum/tasks-status.enum';
+import { TaskStatusEnum } from '../enums/task-status.enum'; // Fixed import path
 import { TaskActivityService } from './task-activity.service';
-import { TaskPriorityEnum } from '../enum/task-priority.enum';
-import { UserRoleEnum } from '@/app/auth/enum/user-role.enum';
-import { CacheService } from 'src/shared/cache/cache.service';
+import { TaskPriorityEnum } from '../enums/task-priority.enum'; // Fixed import path
+import { UserRoleEnum } from '../../auth/enum/user-role.enum'; // Fixed import path
+import { CacheService } from '../../../shared/cache/cache.service'; // Fixed import path
 
 @Injectable()
 export class TaskService implements TaskServiceInterface {

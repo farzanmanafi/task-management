@@ -1,4 +1,4 @@
-// src/app/tasks/services/task.service.spec.ts
+// src/app/tasks/services/tasks.service.spec.ts
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -89,12 +89,12 @@ describe('TaskService', () => {
       taskActivityService.logActivity.mockResolvedValue(undefined);
 
       // Mock getNextPosition method
-      taskRepository.createQueryBuilder.mockReturnValue({
+      taskRepository.createQueryBuilder = jest.fn().mockReturnValue({
         select: jest.fn().mockReturnThis(),
         where: jest.fn().mockReturnThis(),
         andWhere: jest.fn().mockReturnThis(),
         getRawOne: jest.fn().mockResolvedValue({ maxPosition: 5 }),
-      } as any);
+      });
 
       const result = await service.create(createTaskDto, mockUser);
 
@@ -125,7 +125,6 @@ describe('TaskService', () => {
         priority: TaskPriorityEnum.HIGH,
       };
 
-      // Fixed: Create proper PaginationDto instance
       const pagination = new PaginationDto();
       pagination.page = 1;
       pagination.limit = 10;
@@ -236,11 +235,20 @@ describe('TaskService', () => {
         createdById: mockUser.id,
       });
 
-      cacheService.get.mockResolvedValue(mockTask);
-      taskRepository.save.mockResolvedValue({
+      // Create updated task with new status
+      const updatedTask = await TestUtils.createMockTask({
         ...mockTask,
         status: newStatus,
       });
+
+      // Mock the repository methods
+      taskRepository.findOne.mockResolvedValue(mockTask);
+      taskRepository.save.mockResolvedValue(updatedTask as Task);
+
+      // Mock cache service
+      cacheService.get.mockResolvedValue(null);
+      cacheService.set.mockResolvedValue(undefined);
+      cacheService.delPattern.mockResolvedValue(undefined);
 
       const result = await service.updateStatus(taskId, newStatus, mockUser);
 

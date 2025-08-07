@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Project } from '../../app/projects/entities/project.entity';
 import { User } from '../../app/auth/entities/user.entity';
-import { ProjectStatusEnum } from 'src/app/projects/enum/project-status.enum';
+import { ProjectStatusEnum } from '../../app/projects/enum/project-status.enum';
 
 @Injectable()
 export class ProjectSeeder {
@@ -77,7 +77,7 @@ export class ProjectSeeder {
       if (!existingProject) {
         const project = this.projectRepository.create(projectData);
         await this.projectRepository.save(project);
-        console.log(`Created projects: ${projectData.name}`);
+        console.log(`Created project: ${projectData.name}`);
       } else {
         console.log(`Project already exists: ${projectData.name}`);
       }

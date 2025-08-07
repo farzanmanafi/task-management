@@ -1,82 +1,3 @@
-// import {
-//   Controller,
-//   Get,
-//   Post,
-//   Body,
-//   Patch,
-//   Param,
-//   Delete,
-//   UsePipes,
-//   ValidationPipe,
-//   ParseIntPipe,
-//   UseGuards,
-//   Logger,
-// } from '@nestjs/common';
-// import { TasksService } from './tasks.service';
-// import { CreateTaskDto } from './dto/create-task.dto';
-// import { Task } from './entities/task.entity';
-// import { TaskStatusEnum } from './enum/tasks-status.enum';
-// import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
-// import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
-// import { AuthGuard } from '@nestjs/passport';
-// import { GetUser } from '../auth/decorator/get-user.dec';
-// import { User } from '../auth/entities/user.entity';
-
-// @Controller('tasks')
-// @UseGuards(AuthGuard())
-// export class TasksController {
-//   private logger = new Logger('TasksController');
-//   constructor(private readonly tasksService: TasksService) {}
-
-//   @Get()
-//   getTasks(
-//     filterDto: GetTasksFilterDto,
-//     @GetUser() user: User,
-//   ): Promise<Task[]> {
-//     this.logger.verbose(
-//       `User "${user.username}" retriving all tasks ${filterDto}`,
-//     );
-//     return this.tasksService.getTasks(filterDto, user);
-//   }
-
-//   @Get('/:id')
-//   getTaskById(
-//     @Param('id', ParseIntPipe) id: number,
-//     @GetUser() user: User,
-//   ): Promise<Task> {
-//     return this.tasksService.getTaskById(+id, user);
-//   }
-
-//   @Post()
-//   @UsePipes(ValidationPipe)
-//   createTask(
-//     @Body() createTaskDto: CreateTaskDto,
-//     @GetUser() user: User,
-//   ): Promise<Task> {
-//     this.logger.verbose(
-//       `User "${user.username}" creating anew task. Data: ${JSON.stringify(
-//         createTaskDto,
-//       )}.`,
-//     );
-//     return this.tasksService.createTask(createTaskDto, user);
-//   }
-
-//   @Delete('/:id')
-//   deleteTask(@Param('id') id: number, @GetUser() user: User): Promise<void> {
-//     return this.tasksService.deleteTask(id, user);
-//   }
-
-//   @Patch('/:id/status')
-//   updateTaskStatus(
-//     @Param('id', ParseIntPipe) id: number,
-//     @Body('status', TaskStatusValidationPipe) status: TaskStatusEnum,
-//     @GetUser() user: User,
-//   ): Promise<Task> {
-//     return this.tasksService.updateTaskStatus(id, status, user);
-//   }
-// }
-
-// src/app/tasks/controllers/tasks.controller.ts (enhanced with Swagger)
 import {
   Controller,
   Get,
@@ -106,24 +27,40 @@ import {
   ApiExtraModels,
   getSchemaPath,
 } from '@nestjs/swagger';
-import { TasksService } from '../services/task.service';
-import { CreateTaskDto } from '../dto/create-task.dto';
-import { UpdateTaskDto } from '../dto/update-task.dto';
-import { TaskFilterDto } from '../dto/task-filter.dto';
-import { PaginationDto } from '../../../shared/dto/pagination.dto';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-import { User } from '../../auth/entities/user.entity';
-import { Task } from '../entities/task.entity';
-import { TaskStatusEnum } from '../enums/task-status.enum';
-import { TaskPriorityEnum } from '../enums/task-priority.enum';
-import { Cache } from '../../../shared/decorators/cache.decorator';
-import { CacheInterceptor } from '../../../shared/interceptors/cache.interceptor';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { Task } from './entities/task.entity';
 import {
-  ApiResponseDto,
   ApiErrorResponseDto,
+  ApiResponseDto,
   PaginatedResponseDto,
-} from '../../../shared/dto/api-response.dto';
+} from '@/shared/dto/api-response.dto';
+import { TaskService } from './services/tasks.service';
+import { CreateTaskDto } from './dto/create-task.dto';
+import { User } from '../auth/entities/user.entity';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { CacheInterceptor } from '@/shared/interceptors/cache.interceptor';
+import { TaskPriorityEnum, TaskStatusEnum } from './enums';
+import { TaskFilterDto } from './dto/task-filter.dto';
+import { PaginationDto } from '@/shared/dto/pagination.dto';
+import { UpdateTaskDto } from './dto/update-task.dto';
+// import { TasksService } from '../services/task.service';
+// import { CreateTaskDto } from '../dto/create-task.dto';
+// import { UpdateTaskDto } from '../dto/update-task.dto';
+// import { TaskFilterDto } from '../dto/task-filter.dto';
+// import { PaginationDto } from '../../../shared/dto/pagination.dto';
+// import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+// import { CurrentUser } from '../../auth/decorators/current-user.decorator';
+// import { User } from '../../auth/entities/user.entity';
+// import { Task } from '../entities/task.entity';
+// import { TaskStatusEnum } from '../enums/task-status.enum';
+// import { TaskPriorityEnum } from '../enums/task-priority.enum';
+// import { Cache } from '../../../shared/decorators/cache.decorator';
+// import { CacheInterceptor } from '../../../shared/interceptors/cache.interceptor';
+// import {
+//   ApiResponseDto,
+//   ApiErrorResponseDto,
+//   PaginatedResponseDto,
+// } from '../../../shared/dto/api-response.dto';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -133,7 +70,7 @@ import {
 export class TasksController {
   private readonly logger = new Logger(TasksController.name);
 
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(private readonly tasksService: TaskService) {}
 
   @Post()
   @ApiOperation({

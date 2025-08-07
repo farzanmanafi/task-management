@@ -27,6 +27,12 @@ export class PaginationDto {
   @Type(() => Number)
   limit: number = 10;
 
+  // Changed from getter to method to avoid TypeScript strict property initialization issues
+  getOffset(): number {
+    return (this.page - 1) * this.limit;
+  }
+
+  // Keep getter for backward compatibility if needed elsewhere
   get offset(): number {
     return (this.page - 1) * this.limit;
   }

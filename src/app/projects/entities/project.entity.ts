@@ -12,8 +12,8 @@ import { User } from 'src/app/auth/entities/user.entity';
 
 @Entity()
 export class Project extends BaseEntity {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid') // Changed to UUID
+  id: string; // Changed from number to string
 
   @Column()
   name: string;
@@ -43,6 +43,6 @@ export class Project extends BaseEntity {
   })
   user: User;
 
-  @Column()
-  userId: number;
+  @Column({ type: 'uuid' }) // Changed to UUID type
+  userId: string; // Changed from number to string
 }

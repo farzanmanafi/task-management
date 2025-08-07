@@ -4,9 +4,8 @@ import { CreateTaskDto } from '../dto/create-task.dto';
 import { UpdateTaskDto } from '../dto/update-task.dto';
 import { PaginationDto } from '../../../shared/dto/pagination.dto';
 import { User } from '../../auth/entities/user.entity';
-import { TaskStatusEnum } from '../enum/tasks-status.enum';
 import { TaskFilterDto } from '../dto/task-filter.dto';
-import { TaskPriorityEnum } from '../enum/task-priority.enum';
+import { TaskPriorityEnum, TaskStatusEnum } from '../enums';
 
 export interface TaskStats {
   total: number;

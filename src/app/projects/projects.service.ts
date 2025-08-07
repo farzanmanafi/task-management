@@ -27,7 +27,7 @@ export class ProjectsService {
 
   getProjectById(id: number, user: User): Promise<Project> {
     const found = this.projectRepository.findOne({
-      where: { id: +id, userId: user.id },
+      where: { id: id.toString(), userId: user.id }, // Fixed: Convert id to string and use user.id as string
     });
     if (!found)
       throw new NotFoundException(`Project with ID: ${id} not found!`);
@@ -56,6 +56,6 @@ export class ProjectsService {
 
   async deleteProject(id: number, user: User) {
     const found = await this.getProjectById(id, user);
-    if (found) await this.projectRepository.delete(id);
+    if (found) await this.projectRepository.delete(id.toString()); // Fixed: Convert to string
   }
 }

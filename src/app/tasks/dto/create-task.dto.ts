@@ -13,9 +13,10 @@ import {
   Max,
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TaskStatusEnum } from '../enum/tasks-status.enum';
-import { TaskPriorityEnum } from '../enum/task-priority.enum';
-import { TaskIssueTypeEnum } from '../enum/task-issue-type.enum';
+import { TaskIssueTypeEnum, TaskPriorityEnum, TaskStatusEnum } from '../enums';
+// import { TaskStatusEnum } from '../enum/tasks-status.enum';
+// import { TaskPriorityEnum } from '../enum/task-priority.enum';
+// import { TaskIssueTypeEnum } from '../enum/task-issue-type.enum';
 
 export class CreateTaskDto {
   @ApiProperty({

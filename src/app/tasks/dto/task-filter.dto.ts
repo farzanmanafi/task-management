@@ -9,9 +9,10 @@ import {
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
 import { BaseFilterDto } from '../../../shared/dto/base-filter.dto';
-import { TaskStatusEnum } from '../enum/tasks-status.enum';
-import { TaskIssueTypeEnum } from '../enum/task-issue-type.enum';
-import { TaskPriorityEnum } from '../enum/task-priority.enum';
+import { TaskIssueTypeEnum, TaskPriorityEnum, TaskStatusEnum } from '../enums';
+// import { TaskStatusEnum } from '../enum/tasks-status.enum';
+// import { TaskIssueTypeEnum } from '../enum/task-issue-type.enum';
+// import { TaskPriorityEnum } from '../enum/task-priority.enum';
 
 export class TaskFilterDto extends BaseFilterDto {
   @ApiPropertyOptional({

@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { TaskService } from './task.service';
+import { TaskService } from './tasks.service';
 import { Task } from '../entities/task.entity';
 import { TaskActivityService } from './task-activity.service';
 import { CacheService } from '../../../shared/cache/cache.service';
@@ -13,7 +13,6 @@ import { PaginationDto } from '../../../shared/dto/pagination.dto';
 import { TaskStatusEnum } from '../enums/task-status.enum';
 import { TaskPriorityEnum } from '../enums/task-priority.enum';
 import { TaskIssueTypeEnum } from '../enums/task-issue-type.enum';
-import { UserRoleEnum } from '../../auth/enums/user-role.enum';
 import { TestUtils } from '../../../../test/utils/test-utils';
 import { mockCacheService } from '../../../../test/mocks/cache.service.mock';
 import { mockEventEmitter } from '../../../../test/mocks/event-emitter.mock';
@@ -51,10 +50,18 @@ describe('TaskService', () => {
     }).compile();
 
     service = module.get<TaskService>(TaskService);
-    taskRepository = module.get(getRepositoryToken(Task));
-    taskActivityService = module.get(TaskActivityService);
-    cacheService = module.get(CacheService);
-    eventEmitter = module.get(EventEmitter2);
+    taskRepository = module.get(getRepositoryToken(Task)) as jest.Mocked<
+      Repository<Task>
+    >;
+    taskActivityService = module.get(
+      TaskActivityService,
+    ) as jest.Mocked<TaskActivityService>;
+    cacheService = module.get(CacheService) as jest.Mocked<
+      typeof mockCacheService
+    >;
+    eventEmitter = module.get(EventEmitter2) as jest.Mocked<
+      typeof mockEventEmitter
+    >;
   });
 
   beforeEach(() => {
@@ -117,7 +124,12 @@ describe('TaskService', () => {
         status: TaskStatusEnum.IN_PROGRESS,
         priority: TaskPriorityEnum.HIGH,
       };
-      const pagination: PaginationDto = { page: 1, limit: 10 };
+
+      // Fixed: Create proper PaginationDto instance
+      const pagination = new PaginationDto();
+      pagination.page = 1;
+      pagination.limit = 10;
+
       const mockUser = await TestUtils.createMockUser();
       const mockTasks = [
         await TestUtils.createMockTask({ id: '1' }),
@@ -152,7 +164,10 @@ describe('TaskService', () => {
 
     it('should return cached results when available', async () => {
       const filters: TaskFilterDto = {};
-      const pagination: PaginationDto = { page: 1, limit: 10 };
+      const pagination = new PaginationDto();
+      pagination.page = 1;
+      pagination.limit = 10;
+
       const mockUser = await TestUtils.createMockUser();
       const cachedResult = {
         tasks: [await TestUtils.createMockTask()],
@@ -322,10 +337,10 @@ describe('TaskService', () => {
         }),
       ];
 
+      const updatedTasks = mockTasks.map((task) => ({ ...task, ...updates }));
+
       taskRepository.findByIds.mockResolvedValue(mockTasks);
-      taskRepository.save.mockResolvedValue(
-        mockTasks.map((task) => ({ ...task, ...updates })),
-      );
+      taskRepository.save.mockResolvedValue(updatedTasks as any);
 
       const result = await service.bulkUpdate(taskIds, updates, mockUser);
 

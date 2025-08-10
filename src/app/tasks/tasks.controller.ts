@@ -33,14 +33,14 @@ import {
   ApiErrorResponseDto,
   ApiResponseDto,
   PaginatedResponseDto,
-} from '@/shared/dto/api-response.dto';
+} from '../../shared/dto/api-response.dto';
 import { TaskService } from './services/tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from '../auth/entities/user.entity';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 import { TaskPriorityEnum, TaskStatusEnum } from './enums';
 import { TaskFilterDto } from './dto/task-filter.dto';
-import { PaginationDto } from '@/shared/dto/pagination.dto';
+import { PaginationDto } from '../../shared/dto/pagination.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { CacheInterceptor } from '../../shared/interceptors/cache.interceptor';
 import { CacheData } from '../../shared/decorators/cache.decorator';

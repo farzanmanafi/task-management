@@ -4,7 +4,6 @@ import { Label } from './entities/label.entity';
 import { CreateLabelDto } from './dto/create-label.dto';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 
-//TODO read repository pattern
 @EntityRepository(Label)
 export class LabelRepository extends Repository<Label> {
   private logger = new Logger('LabelRepository');

@@ -8,13 +8,14 @@ import { Project } from '../../src/app/projects/entities/project.entity';
 import { Label } from '../../src/app/labels/entities/label.entity';
 
 import * as bcrypt from 'bcrypt';
-import { UserRoleEnum } from '../../src/app/auth/enum/user-role.enum';
+
 import {
   TaskIssueTypeEnum,
   TaskPriorityEnum,
   TaskStatusEnum,
-} from '@/app/tasks/enums';
-import { ProjectStatusEnum } from '@/app/projects/enum/project-status.enum';
+} from '../../src/app/tasks/enums';
+import { ProjectStatusEnum } from '../../src/app/projects/enum/project-status.enum';
+import { UserRoleEnum } from '@/app/auth/enum/user-role.enum';
 
 export class TestUtils {
   static async createTestModule(

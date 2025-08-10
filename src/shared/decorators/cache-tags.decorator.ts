@@ -12,7 +12,7 @@ export const CacheTags = (...tags: string[]) =>
 export class TasksController {
   @Get()
   @CacheTags('tasks', 'user_tasks')
-  @Cache('tasks:{userId}:{query}', 300)
+  @CacheData('tasks:{userId}:{query}', 300)
   async findAll(@Query() query: any, @CurrentUser() user: User) {
     // Implementation
   }

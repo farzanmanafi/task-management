@@ -38,29 +38,12 @@ import { TaskService } from './services/tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { User } from '../auth/entities/user.entity';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { CacheInterceptor } from '@/shared/interceptors/cache.interceptor';
 import { TaskPriorityEnum, TaskStatusEnum } from './enums';
 import { TaskFilterDto } from './dto/task-filter.dto';
 import { PaginationDto } from '@/shared/dto/pagination.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-// import { TasksService } from '../services/task.service';
-// import { CreateTaskDto } from '../dto/create-task.dto';
-// import { UpdateTaskDto } from '../dto/update-task.dto';
-// import { TaskFilterDto } from '../dto/task-filter.dto';
-// import { PaginationDto } from '../../../shared/dto/pagination.dto';
-// import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-// import { CurrentUser } from '../../auth/decorators/current-user.decorator';
-// import { User } from '../../auth/entities/user.entity';
-// import { Task } from '../entities/task.entity';
-// import { TaskStatusEnum } from '../enums/task-status.enum';
-// import { TaskPriorityEnum } from '../enums/task-priority.enum';
-// import { Cache } from '../../../shared/decorators/cache.decorator';
-// import { CacheInterceptor } from '../../../shared/interceptors/cache.interceptor';
-// import {
-//   ApiResponseDto,
-//   ApiErrorResponseDto,
-//   PaginatedResponseDto,
-// } from '../../../shared/dto/api-response.dto';
+import { CacheInterceptor } from '../../shared/interceptors/cache.interceptor';
+import { CacheData } from '../../shared/decorators/cache.decorator';
 
 @ApiTags('Tasks')
 @Controller('tasks')
@@ -159,7 +142,7 @@ export class TasksController {
 
   @Get()
   @UseInterceptors(CacheInterceptor)
-  @Cache(
+  @CacheData(
     'tasks:{userId}:{query.page}:{query.limit}:{query.status}:{query.priority}',
     300,
   )
@@ -287,7 +270,7 @@ export class TasksController {
 
   @Get(':id')
   @UseInterceptors(CacheInterceptor)
-  @Cache('task:{id}:{userId}', 300)
+  @CacheData('task:{id}:{userId}', 300)
   @ApiOperation({
     summary: 'Get task by ID',
     description:
@@ -647,7 +630,7 @@ export class TasksController {
 
   @Get(':id/stats')
   @UseInterceptors(CacheInterceptor)
-  @Cache('task_stats:{id}:{userId}', 600)
+  @CacheData('task_stats:{id}:{userId}', 600)
   @ApiOperation({
     summary: 'Get task statistics',
     description:

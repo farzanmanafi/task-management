@@ -8,7 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { AdvancedCacheService } from '../services/advanced-cache.service';
-import { CACHE_KEY } from './cache.interceptor';
+import { CACHE_KEY } from '../decorators/cache.decorator';
 import { CACHE_TAGS_KEY } from '../decorators/cache-tags.decorator';
 
 @Injectable()

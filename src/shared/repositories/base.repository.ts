@@ -8,9 +8,15 @@ import {
   UpdateResult,
 } from 'typeorm';
 import { BaseRepositoryInterface } from '../interfaces/repository.interface';
+import { FindOptionsWhere } from 'typeorm';
 
+interface BaseEntity {
+  id: string | number;
+}
 @Injectable()
-export abstract class BaseRepository<T> implements BaseRepositoryInterface<T> {
+export abstract class BaseRepository<T extends BaseEntity>
+  implements BaseRepositoryInterface<T>
+{
   constructor(protected readonly repository: Repository<T>) {}
 
   create(data: DeepPartial<T>): T {
@@ -29,14 +35,17 @@ export abstract class BaseRepository<T> implements BaseRepositoryInterface<T> {
     return await this.repository.find(options);
   }
 
-  async findById(id: string): Promise<T | null> {
+  async findById(id: string | number): Promise<T | null> {
     return await this.repository.findOne({
-      where: { id },
-    } as FindOneOptions<T>);
+      where: { id } as FindOptionsWhere<T>,
+    });
   }
 
-  async update(id: string, data: DeepPartial<T>): Promise<UpdateResult> {
-    return await this.repository.update(id, data);
+  async update(
+    id: string | number,
+    data: DeepPartial<T>,
+  ): Promise<UpdateResult> {
+    return await this.repository.update(id, data as any);
   }
 
   async delete(id: string): Promise<DeleteResult> {

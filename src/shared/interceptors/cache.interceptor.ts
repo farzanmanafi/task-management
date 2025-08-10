@@ -9,9 +9,7 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { CacheService } from '../cache/cache.service';
 
-export const CACHE_KEY = 'cache_key';
-export const Cache = (key: string, ttl: number = 300) =>
-  Reflect.metadata(CACHE_KEY, { key, ttl });
+import { CACHE_KEY } from '../decorators/cache.decorator';
 
 @Injectable()
 export class CacheInterceptor implements NestInterceptor {

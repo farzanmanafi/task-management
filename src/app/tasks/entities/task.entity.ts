@@ -81,22 +81,22 @@ export class Task {
 
   @Column({ type: 'timestamp', nullable: true })
   @IsOptional()
-  startDate: Date;
+  startDate?: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   @IsOptional()
-  dueDate: Date;
+  dueDate?: Date;
 
   @Column({ type: 'timestamp', nullable: true })
   @IsOptional()
-  completedAt: Date;
+  completedAt?: Date;
 
   @Column({ type: 'decimal', precision: 5, scale: 2, nullable: true })
   @IsOptional()
   @IsNumber({}, { message: 'Estimated hours must be a number' })
   @Min(0, { message: 'Estimated hours must be positive' })
   @Max(999, { message: 'Estimated hours must not exceed 999' })
-  estimatedHours: number;
+  estimatedHours?: number;
 
   @Column({ type: 'decimal', precision: 5, scale: 2, default: 0 })
   @IsNumber({}, { message: 'Actual hours must be a number' })
@@ -112,11 +112,11 @@ export class Task {
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
-  externalId: string;
+  externalId?: string;
 
   @Column({ type: 'json', nullable: true })
   @IsOptional()
-  metadata: Record<string, any>;
+  metadata?: Record<string, any>;
 
   @Column({ type: 'int', default: 0 })
   position: number;
@@ -126,7 +126,7 @@ export class Task {
 
   @Column({ type: 'text', nullable: true })
   @IsOptional()
-  blockedReason: string;
+  blockedReason?: string;
 
   @Column({ type: 'boolean', default: false })
   isArchived: boolean;
@@ -134,18 +134,18 @@ export class Task {
   // Foreign Keys
   @Column({ type: 'uuid', nullable: true })
   @IsOptional()
-  assigneeId: string;
+  assigneeId?: string;
 
   @Column({ type: 'uuid', nullable: true })
   @IsOptional()
-  projectId: string;
+  projectId?: string;
 
   @Column({ type: 'uuid' })
   createdById: string;
 
   @Column({ type: 'uuid', nullable: true })
   @IsOptional()
-  parentTaskId: string;
+  parentTaskId?: string;
 
   // Timestamps
   @CreateDateColumn({ type: 'timestamp' })
@@ -156,7 +156,7 @@ export class Task {
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   @Exclude()
-  deletedAt: Date;
+  deletedAt?: Date;
 
   // Relationships
   @ManyToOne(() => User, (user) => user.assignedTasks, {

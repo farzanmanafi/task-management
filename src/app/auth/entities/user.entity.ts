@@ -22,6 +22,8 @@ import * as bcrypt from 'bcrypt';
 
 import { Task } from '../../tasks/entities/task.entity';
 import { Project } from '../../projects/entities/project.entity';
+import { TaskComment } from '../../tasks/entities/task-comment.entity';
+import { TaskAttachment } from '../../tasks/entities/task-attachment.entity';
 import { UserRoleEnum } from '../enum/user-role.enum';
 import { UserGenderEnum } from '../enum/user-gender.enum';
 
@@ -35,11 +37,11 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'varchar', length: 100 })
+  @Column({ type: 'varchar', length: 100, unique: true })
   @IsEmail({}, { message: 'Please enter a valid email address' })
   email: string;
 
-  @Column({ type: 'varchar', length: 50 })
+  @Column({ type: 'varchar', length: 50, unique: true })
   @IsNotEmpty()
   username: string;
 
@@ -86,7 +88,7 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   lastLoginAt?: Date;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 500, nullable: true })
   @Exclude({ toPlainOnly: true })
   refreshToken?: string;
 
@@ -101,6 +103,7 @@ export class User {
   updatedAt: Date;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  @Exclude({ toPlainOnly: true })
   deletedAt?: Date;
 
   // Relationships
@@ -112,6 +115,14 @@ export class User {
 
   @OneToMany(() => Project, (project) => project.user, { lazy: true })
   projects: Promise<Project[]>;
+
+  @OneToMany(() => TaskComment, (comment) => comment.author, { lazy: true })
+  taskComments: Promise<TaskComment[]>;
+
+  @OneToMany(() => TaskAttachment, (attachment) => attachment.uploadedBy, {
+    lazy: true,
+  })
+  uploadedAttachments: Promise<TaskAttachment[]>;
 
   // Computed property
   get fullName(): string {
@@ -137,6 +148,15 @@ export class User {
     if (this.isActive === undefined) {
       this.isActive = true;
     }
+    if (!this.email) {
+      throw new Error('Email is required');
+    }
+    if (!this.username) {
+      throw new Error('Username is required');
+    }
+    // Ensure email and username are lowercase
+    this.email = this.email.toLowerCase();
+    this.username = this.username.toLowerCase();
   }
 
   // Methods
@@ -163,5 +183,29 @@ export class User {
       return false;
     }
     return new Date() < this.refreshTokenExpiresAt;
+  }
+
+  activate(): void {
+    this.isActive = true;
+  }
+
+  deactivate(): void {
+    this.isActive = false;
+    this.clearRefreshToken();
+  }
+
+  verifyEmail(): void {
+    this.isEmailVerified = true;
+  }
+
+  updateProfile(data: {
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    avatar?: string;
+    birthDate?: Date;
+    gender?: UserGenderEnum;
+  }): void {
+    Object.assign(this, data);
   }
 }

@@ -1,28 +1,37 @@
 import {
-  BaseEntity,
+  Entity,
+  PrimaryGeneratedColumn,
   Column,
   OneToMany,
   ManyToOne,
-  Entity,
-  PrimaryGeneratedColumn,
+  JoinColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  DeleteDateColumn,
+  Index,
 } from 'typeorm';
-import { Task } from 'src/app/tasks/entities/task.entity';
+import { Task } from '../../tasks/entities/task.entity';
 import { ProjectStatusEnum } from '../enum/project-status.enum';
-import { User } from 'src/app/auth/entities/user.entity';
+import { User } from '../../auth/entities/user.entity';
 
-@Entity()
-export class Project extends BaseEntity {
-  @PrimaryGeneratedColumn('uuid') // Changed to UUID
-  id: string; // Changed from number to string
+@Entity('projects')
+@Index(['userId'])
+@Index(['status'])
+@Index(['createdAt'])
+export class Project {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-  @Column()
+  @Column({ type: 'varchar', length: 200 })
   name: string;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 
-  @Column('enum', {
+  @Column({
+    type: 'enum',
     enum: ProjectStatusEnum,
+    default: ProjectStatusEnum.PLANNING,
   })
   status: ProjectStatusEnum;
 
@@ -32,17 +41,55 @@ export class Project extends BaseEntity {
   @Column({ type: 'date' })
   endDate: Date;
 
-  @OneToMany(() => Task, (task) => task.project)
-  tasks!: Task[];
+  @Column({ type: 'uuid' })
+  userId: string;
 
-  @ManyToOne((type) => User, (user) => user.projects, {
-    cascade: true,
-    eager: false,
-    onDelete: 'CASCADE',
-    nullable: false,
+  @CreateDateColumn({ type: 'timestamp' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ type: 'timestamp' })
+  updatedAt: Date;
+
+  @DeleteDateColumn({ type: 'timestamp', nullable: true })
+  deletedAt?: Date;
+
+  // Relationships
+  @OneToMany(() => Task, (task) => task.project, {
+    lazy: true,
+    cascade: ['soft-remove'],
   })
-  user: User;
+  tasks: Promise<Task[]>;
 
-  @Column({ type: 'uuid' }) // Changed to UUID type
-  userId: string; // Changed from number to string
+  @ManyToOne(() => User, (user) => user.projects, {
+    lazy: true,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'userId' })
+  user: Promise<User>;
+
+  // Computed properties
+  get isActive(): boolean {
+    return this.status === ProjectStatusEnum.ACTIVE;
+  }
+
+  get isCompleted(): boolean {
+    return this.status === ProjectStatusEnum.COMPLETED;
+  }
+
+  get duration(): number {
+    const start = new Date(this.startDate);
+    const end = new Date(this.endDate);
+    return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+  }
+
+  // Methods
+  updateStatus(status: ProjectStatusEnum): void {
+    this.status = status;
+  }
+
+  extendDeadline(newEndDate: Date): void {
+    if (newEndDate > this.endDate) {
+      this.endDate = newEndDate;
+    }
+  }
 }

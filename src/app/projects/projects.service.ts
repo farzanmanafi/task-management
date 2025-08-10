@@ -41,17 +41,20 @@ export class ProjectsService {
   ) {
     const { name, description, status, startDate, endDate } = updateProjectDto;
     const project = await this.getProjectById(id, user);
+
+    // Update project properties
     project.description = description;
     project.status = status;
     project.name = name;
     project.startDate = startDate;
     project.endDate = endDate;
-    project.user = user;
-    await project.save();
+    // Note: Don't assign user directly since it's a lazy-loaded relationship
+    // The userId is already set when the project was created
 
-    delete project.user;
+    // Use repository.save() instead of project.save()
+    const updatedProject = await this.projectRepository.save(project);
 
-    return project;
+    return updatedProject;
   }
 
   async deleteProject(id: number, user: User) {

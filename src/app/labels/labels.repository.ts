@@ -11,9 +11,10 @@ export class LabelRepository extends Repository<Label> {
   async createLabel(createLabelDto: CreateLabelDto): Promise<Label> {
     try {
       const { name } = createLabelDto;
-      const label = new Label();
-      label.name = name;
-      await label.save();
+      const label = this.create({
+        name,
+      });
+      await this.save(label); // Use repository.save() instead of label.save()
       return label;
     } catch (error) {
       this.logger.error(`Failed to create a label for task.`, error.stack);

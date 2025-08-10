@@ -18,7 +18,9 @@ export class LabelsService {
   }
 
   async getLabelById(id: number): Promise<Label> {
-    const found = await this.labelRepository.findOneById(+id);
+    const found = await this.labelRepository.findOne({
+      where: { id },
+    });
     if (!found) throw new NotFoundException(`Label with ID: ${id} not found!`);
     return found;
   }
@@ -34,7 +36,7 @@ export class LabelsService {
     const { name } = updateLabelDto;
     const label = await this.getLabelById(id);
     label.name = name;
-    await label.save();
+    await this.labelRepository.save(label);
     return label;
   }
 

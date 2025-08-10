@@ -11,7 +11,6 @@ import {
   Index,
   BeforeInsert,
   BeforeUpdate,
-  AfterLoad,
 } from 'typeorm';
 import {
   IsNotEmpty,
@@ -45,13 +44,15 @@ import { TaskIssueTypeEnum } from '../enums/task-issue-type.enum';
 @Index(['status', 'priority'])
 @Index(['assigneeId', 'status'])
 @Index(['projectId', 'status'])
+@Index(['position'])
+@Index(['isBlocked'])
+@Index(['isArchived'])
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', length: 200 })
   @IsNotEmpty()
-  @Index()
   title: string;
 
   @Column({ type: 'text' })
@@ -64,7 +65,6 @@ export class Task {
     default: TaskStatusEnum.BACKLOG,
   })
   @IsEnum(TaskStatusEnum)
-  @Index()
   status: TaskStatusEnum;
 
   @Column({
@@ -73,7 +73,6 @@ export class Task {
     default: TaskPriorityEnum.MEDIUM,
   })
   @IsEnum(TaskPriorityEnum)
-  @Index()
   priority: TaskPriorityEnum;
 
   @Column({ type: 'enum', enum: TaskIssueTypeEnum })
@@ -120,11 +119,9 @@ export class Task {
   metadata: Record<string, any>;
 
   @Column({ type: 'int', default: 0 })
-  @Index()
   position: number;
 
   @Column({ type: 'boolean', default: false })
-  @Index()
   isBlocked: boolean;
 
   @Column({ type: 'text', nullable: true })
@@ -132,32 +129,26 @@ export class Task {
   blockedReason: string;
 
   @Column({ type: 'boolean', default: false })
-  @Index()
   isArchived: boolean;
 
   // Foreign Keys
   @Column({ type: 'uuid', nullable: true })
   @IsOptional()
-  @Index()
   assigneeId: string;
 
   @Column({ type: 'uuid', nullable: true })
   @IsOptional()
-  @Index()
   projectId: string;
 
   @Column({ type: 'uuid' })
-  @Index()
   createdById: string;
 
   @Column({ type: 'uuid', nullable: true })
   @IsOptional()
-  @Index()
   parentTaskId: string;
 
   // Timestamps
   @CreateDateColumn({ type: 'timestamp' })
-  @Index()
   createdAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })

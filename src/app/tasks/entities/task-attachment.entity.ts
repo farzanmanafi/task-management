@@ -1,4 +1,3 @@
-// src/app/tasks/entities/
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -35,11 +34,9 @@ export class TaskAttachment {
   url: string;
 
   @Column({ type: 'uuid' })
-  @Index()
   taskId: string;
 
   @Column({ type: 'uuid' })
-  @Index()
   uploadedById: string;
 
   @CreateDateColumn({ type: 'timestamp' })

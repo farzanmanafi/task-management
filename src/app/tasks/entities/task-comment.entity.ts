@@ -1,4 +1,3 @@
-// src/app/tasks/entities/task-comment.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -24,11 +23,9 @@ export class TaskComment {
   content: string;
 
   @Column({ type: 'uuid' })
-  @Index()
   taskId: string;
 
   @Column({ type: 'uuid' })
-  @Index()
   authorId: string;
 
   @Column({ type: 'boolean', default: false })

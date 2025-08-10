@@ -1,15 +1,50 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from '../../app.module';
-import { SeedModule } from './seed.module';
+import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Module } from '@nestjs/common';
+import { getDatabaseConfig } from '../../config/database.config';
+import { ConfigService } from '@nestjs/config';
+
 import { UserSeeder } from './user.seed';
 import { ProjectSeeder } from './project.seed';
 import { TaskSeeder } from './task.seed';
 import { LabelSeeder } from './label.seed';
 
+// Import entities
+import { User } from '../../app/auth/entities/user.entity';
+import { Project } from '../../app/projects/entities/project.entity';
+import { Task } from '../../app/tasks/entities/task.entity';
+import { Label } from '../../app/labels/entities/label.entity';
+
+// Create a dedicated seeding module
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        ...getDatabaseConfig(configService),
+        // Enable synchronize for seeding to auto-create tables
+        synchronize: true,
+        // Optionally enable logging to see what's happening
+        logging: configService.get('NODE_ENV') === 'development',
+      }),
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forFeature([User, Project, Task, Label]),
+  ],
+  providers: [UserSeeder, ProjectSeeder, TaskSeeder, LabelSeeder],
+  exports: [UserSeeder, ProjectSeeder, TaskSeeder, LabelSeeder],
+})
+class SeedingModule {}
+
 async function runSeeders() {
   console.log('Starting database seeding...');
 
-  const app = await NestFactory.createApplicationContext(AppModule);
+  const app = await NestFactory.createApplicationContext(SeedingModule);
 
   try {
     // Run seeders in order

@@ -1,4 +1,3 @@
-// src/app/tasks/entities/task-activity.entity.ts
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -36,7 +35,6 @@ export class TaskActivity {
   id: string;
 
   @Column({ type: 'enum', enum: TaskActivityTypeEnum })
-  @Index()
   type: TaskActivityTypeEnum;
 
   @Column({ type: 'text', nullable: true })
@@ -46,11 +44,9 @@ export class TaskActivity {
   metadata: Record<string, any>;
 
   @Column({ type: 'uuid' })
-  @Index()
   taskId: string;
 
   @Column({ type: 'uuid' })
-  @Index()
   userId: string;
 
   @CreateDateColumn({ type: 'timestamp' })

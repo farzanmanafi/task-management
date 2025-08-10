@@ -22,7 +22,8 @@ import * as bcrypt from 'bcrypt';
 
 import { Task } from '../../tasks/entities/task.entity';
 import { Project } from '../../projects/entities/project.entity';
-import { UserGenderEnum, UserRoleEnum } from '../enum';
+import { UserRoleEnum } from '../enum/user-role.enum';
+import { UserGenderEnum } from '../enum/user-gender.enum';
 
 @Entity('users')
 @Index(['email'], { unique: true })
@@ -36,12 +37,10 @@ export class User {
 
   @Column({ type: 'varchar', length: 100 })
   @IsEmail({}, { message: 'Please enter a valid email address' })
-  @Index()
   email: string;
 
   @Column({ type: 'varchar', length: 50 })
   @IsNotEmpty()
-  @Index()
   username: string;
 
   @Column({ type: 'varchar', length: 50 })
@@ -62,39 +61,38 @@ export class User {
 
   @Column({ type: 'date', nullable: true })
   @IsOptional()
-  birthDate: Date;
+  birthDate?: Date;
 
   @Column({ type: 'enum', enum: UserGenderEnum, nullable: true })
   @IsOptional()
   @IsEnum(UserGenderEnum)
-  gender: UserGenderEnum;
+  gender?: UserGenderEnum;
 
   @Column({ type: 'varchar', length: 20, nullable: true })
   @IsOptional()
   @IsPhoneNumber()
-  phoneNumber: string;
+  phoneNumber?: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   @IsOptional()
-  avatar: string;
+  avatar?: string;
 
   @Column({ type: 'boolean', default: false })
   isEmailVerified: boolean;
 
   @Column({ type: 'boolean', default: true })
-  @Index()
   isActive: boolean;
 
   @Column({ type: 'timestamp', nullable: true })
-  lastLoginAt: Date;
+  lastLoginAt?: Date;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   @Exclude({ toPlainOnly: true })
-  refreshToken: string;
+  refreshToken?: string;
 
   @Column({ type: 'timestamp', nullable: true })
   @Exclude({ toPlainOnly: true })
-  refreshTokenExpiresAt: Date;
+  refreshTokenExpiresAt?: Date;
 
   @CreateDateColumn({ type: 'timestamp' })
   createdAt: Date;
@@ -103,9 +101,9 @@ export class User {
   updatedAt: Date;
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
-  deletedAt: Date;
+  deletedAt?: Date;
 
-  // Relationships - Fixed to match Task entity relationships
+  // Relationships
   @OneToMany(() => Task, (task) => task.createdBy, { lazy: true })
   createdTasks: Promise<Task[]>;
 
@@ -115,7 +113,7 @@ export class User {
   @OneToMany(() => Project, (project) => project.user, { lazy: true })
   projects: Promise<Project[]>;
 
-  // Computed properties
+  // Computed property
   get fullName(): string {
     return `${this.firstName} ${this.lastName}`.trim();
   }
@@ -124,7 +122,8 @@ export class User {
   @BeforeInsert()
   @BeforeUpdate()
   async hashPassword(): Promise<void> {
-    if (this.password) {
+    if (this.password && !this.password.startsWith('$2b$')) {
+      // Only hash if not already hashed
       const saltRounds = 12;
       this.password = await bcrypt.hash(this.password, saltRounds);
     }

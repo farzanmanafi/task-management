@@ -6,11 +6,12 @@ import { GlobalExceptionFilter } from './shared/filters/global-exception.filter'
 import { ResponseInterceptor } from './shared/interceptors/response.interceptor';
 import { setupSwagger } from './config/swagger.config';
 import { AppConfigService } from './config/config.service';
+import { QueueService } from './queue/queue.service';
 import helmet from 'helmet';
 import compression from 'compression';
 
 // Import bull board setup function
-async function setupBullBoard(queueService: any) {
+async function setupBullBoard(queueService: QueueService) {
   try {
     // Dynamic import to handle missing Bull Board packages
     const { createBullBoard } = await import('@bull-board/api');
@@ -63,7 +64,7 @@ async function bootstrap() {
 
     // Setup Bull Board with error handling
     try {
-      const queueService = app.get('QueueService'); // Use string token to avoid errors
+      const queueService = app.get(QueueService); // Use class token instead of string
       if (queueService) {
         const bullBoardAdapter = await setupBullBoard(queueService);
         if (bullBoardAdapter) {

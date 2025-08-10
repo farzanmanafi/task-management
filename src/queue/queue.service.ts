@@ -52,6 +52,23 @@ export class QueueService {
     @InjectQueue('file-processing') private fileProcessingQueue: Queue,
   ) {}
 
+  // Getter methods for Bull Board
+  getEmailQueue(): Queue {
+    return this.emailQueue;
+  }
+
+  getNotificationQueue(): Queue {
+    return this.notificationQueue;
+  }
+
+  getReportQueue(): Queue {
+    return this.reportQueue;
+  }
+
+  getFileProcessingQueue(): Queue {
+    return this.fileProcessingQueue;
+  }
+
   // Email queue methods
   async addEmailJob(data: EmailJobData, options?: JobOptions): Promise<void> {
     try {

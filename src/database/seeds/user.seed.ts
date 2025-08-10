@@ -1,11 +1,9 @@
-// src/database/seeds/user.seed.ts
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../../app/auth/entities/user.entity';
 import { UserRoleEnum } from '../../app/auth/enum/user-role.enum';
 import { UserGenderEnum } from '../../app/auth/enum/user-gender.enum';
-import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserSeeder {
@@ -23,7 +21,7 @@ export class UserSeeder {
         username: 'admin',
         firstName: 'Admin',
         lastName: 'User',
-        password: await bcrypt.hash('Admin123!', 10),
+        password: 'Admin123!', // Don't hash manually - entity will do it
         role: UserRoleEnum.ADMIN,
         gender: UserGenderEnum.PREFER_NOT_TO_SAY,
         isActive: true,
@@ -34,7 +32,7 @@ export class UserSeeder {
         username: 'projectmanager',
         firstName: 'Project',
         lastName: 'Manager',
-        password: await bcrypt.hash('PM123!', 10),
+        password: 'PM123!', // Don't hash manually - entity will do it
         role: UserRoleEnum.PROJECT_MANAGER,
         gender: UserGenderEnum.MALE,
         isActive: true,
@@ -45,7 +43,7 @@ export class UserSeeder {
         username: 'developer1',
         firstName: 'John',
         lastName: 'Developer',
-        password: await bcrypt.hash('Dev123!', 10),
+        password: 'Dev123!', // Don't hash manually - entity will do it
         role: UserRoleEnum.DEVELOPER,
         gender: UserGenderEnum.MALE,
         isActive: true,
@@ -56,7 +54,7 @@ export class UserSeeder {
         username: 'developer2',
         firstName: 'Jane',
         lastName: 'Developer',
-        password: await bcrypt.hash('Dev123!', 10),
+        password: 'Dev123!', // Don't hash manually - entity will do it
         role: UserRoleEnum.DEVELOPER,
         gender: UserGenderEnum.FEMALE,
         isActive: true,
@@ -67,7 +65,7 @@ export class UserSeeder {
         username: 'client',
         firstName: 'Client',
         lastName: 'User',
-        password: await bcrypt.hash('Client123!', 10),
+        password: 'Client123!', // Don't hash manually - entity will do it
         role: UserRoleEnum.CLIENT,
         gender: UserGenderEnum.PREFER_NOT_TO_SAY,
         isActive: true,

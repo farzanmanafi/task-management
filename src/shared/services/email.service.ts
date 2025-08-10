@@ -1,4 +1,3 @@
-// src/shared/services/email.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
@@ -50,7 +49,7 @@ export class EmailService {
       },
     };
 
-    this.transporter = nodemailer.createTransporter(config);
+    this.transporter = nodemailer.createTransport(config);
     this.logger.log('Email transporter initialized');
   }
 

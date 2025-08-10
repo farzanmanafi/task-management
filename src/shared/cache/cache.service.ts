@@ -1,7 +1,6 @@
-// src/shared/cache/cache.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import Redis from 'ioredis';
+import Redis, { RedisOptions } from 'ioredis';
 
 @Injectable()
 export class CacheService {
@@ -10,17 +9,24 @@ export class CacheService {
   private readonly defaultTTL = 3600; // 1 hour
 
   constructor(private configService: ConfigService) {
-    this.redis = new Redis({
+    const redisOptions: RedisOptions = {
       host: this.configService.get<string>('REDIS_HOST', 'localhost'),
       port: this.configService.get<number>('REDIS_PORT', 6379),
       password: this.configService.get<string>('REDIS_PASSWORD'),
       db: this.configService.get<number>('REDIS_DB', 0),
-      retryAttempts: 3,
-      retryDelayOnFailover: 100,
+      // The retryStrategy option is a function that returns the delay in milliseconds. [1]
+      retryStrategy(times: number): number | null {
+        // This will attempt to reconnect with an exponential backoff strategy.
+        // For example, wait 50ms, then 100ms, 200ms, up to a max of 2 seconds.
+        const delay = Math.min(times * 50, 2000);
+        return delay;
+      },
       enableReadyCheck: true,
       maxRetriesPerRequest: 3,
       lazyConnect: true,
-    });
+    };
+
+    this.redis = new Redis(redisOptions);
 
     this.redis.on('connect', () => {
       this.logger.log('Redis connected');
@@ -30,7 +36,6 @@ export class CacheService {
       this.logger.error('Redis connection error:', err);
     });
   }
-
   async get<T>(key: string): Promise<T | null> {
     try {
       const value = await this.redis.get(key);

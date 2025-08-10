@@ -9,8 +9,43 @@ import { AppConfigService } from './config/config.service';
 import helmet from 'helmet';
 import compression from 'compression';
 
-import { setupBullBoard } from './queue/bull-board.setup';
-import { QueueService } from './queue/queue.service';
+// Import bull board setup function
+async function setupBullBoard(queueService: any) {
+  try {
+    // Dynamic import to handle missing Bull Board packages
+    const { createBullBoard } = await import('@bull-board/api');
+    const { BullAdapter } = await import('@bull-board/api/bullAdapter');
+    const { ExpressAdapter } = await import('@bull-board/express');
+
+    const serverAdapter = new ExpressAdapter();
+    serverAdapter.setBasePath('/admin/queues');
+
+    // Access queue instances properly
+    const queues = {
+      email: queueService.getEmailQueue(),
+      notification: queueService.getNotificationQueue(),
+    };
+
+    const bullAdapters = Object.values(queues).map(
+      (queue) => new BullAdapter(queue),
+    );
+
+    createBullBoard({
+      queues: bullAdapters,
+      serverAdapter: serverAdapter,
+    });
+
+    return serverAdapter;
+  } catch (error) {
+    console.warn(
+      'Bull Board packages not found. Queue monitoring will be disabled.',
+    );
+    console.warn(
+      'To enable queue monitoring, install: npm install @bull-board/api @bull-board/api/bullAdapter @bull-board/express',
+    );
+    return null;
+  }
+}
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -26,14 +61,19 @@ async function bootstrap() {
     const configService = app.get(ConfigService);
     const appConfigService = app.get(AppConfigService);
 
-    const queueService = app.get(QueueService);
-    const bullBoardAdapter = setupBullBoard({
-      email: queueService.emailQueue,
-      notification: queueService.notificationQueue,
-      // ... other queues
-    });
-
-    app.use('/admin/queues', bullBoardAdapter.getRouter());
+    // Setup Bull Board with error handling
+    try {
+      const queueService = app.get('QueueService'); // Use string token to avoid errors
+      if (queueService) {
+        const bullBoardAdapter = await setupBullBoard(queueService);
+        if (bullBoardAdapter) {
+          app.use('/admin/queues', bullBoardAdapter.getRouter());
+          logger.log('Queue monitoring available at /admin/queues');
+        }
+      }
+    } catch (error) {
+      logger.warn('Queue service not available or Bull Board setup failed');
+    }
 
     // Security middleware
     app.use(

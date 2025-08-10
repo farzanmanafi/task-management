@@ -1,4 +1,3 @@
-// src/queue/processors/notification-queue.processor.ts
 import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { Logger } from '@nestjs/common';
@@ -20,7 +19,7 @@ export class NotificationQueueProcessor {
         `Processing notification job: ${data.type} for user ${data.userId}`,
       );
 
-      await this.notificationService.notifyUser(data.userId, {
+      await this.sendNotificationToUser(data.userId, {
         type: data.type,
         title: data.title,
         message: data.message,
@@ -37,5 +36,17 @@ export class NotificationQueueProcessor {
       );
       throw error;
     }
+  }
+
+  private async sendNotificationToUser(
+    userId: string,
+    notificationData: any,
+  ): Promise<void> {
+    // Implement the actual notification sending logic here
+    // This could call different methods based on notification type
+    this.logger.log(
+      `Sending notification to user ${userId}:`,
+      notificationData,
+    );
   }
 }

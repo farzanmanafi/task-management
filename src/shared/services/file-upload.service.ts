@@ -3,8 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { existsSync, mkdirSync, unlinkSync } from 'fs';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import * as sharp from 'sharp';
-import * as mime from 'mime-types';
+import sharp from 'sharp';
 
 export interface UploadedFileInfo {
   id: string;
@@ -163,7 +162,7 @@ export class FileUploadService {
 
   private async optimizeImage(buffer: Buffer, filePath: string): Promise<void> {
     try {
-      await sharp(buffer)
+      await sharp(buffer) // Fixed: Use sharp directly
         .resize(1920, 1080, {
           fit: 'inside',
           withoutEnlargement: true,
@@ -184,7 +183,7 @@ export class FileUploadService {
   private async generateThumbnail(filePath: string): Promise<void> {
     try {
       const thumbnailPath = filePath.replace(/\.[^/.]+$/, '_thumb.jpg');
-      await sharp(filePath)
+      await sharp(filePath) // Fixed: Use sharp directly
         .resize(300, 300, {
           fit: 'cover',
           position: 'center',

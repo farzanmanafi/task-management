@@ -3,24 +3,28 @@ import { Task } from './entities/task.entity';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTasksFilterDto } from './dto/get-tasks-filter.dto';
 import { User } from '../auth/entities/user.entity';
-import { Delete, Logger, InternalServerErrorException } from '@nestjs/common';
+import { Logger, InternalServerErrorException } from '@nestjs/common';
 import { TaskStatusEnum } from './enums';
 
-//TODO read repository pattern
 @EntityRepository(Task)
 export class TaskRepository extends Repository<Task> {
   private logger = new Logger('TaskRepository');
 
   async createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     const { title, description } = createTaskDto;
-    const task = new Task();
-    task.description = description;
-    task.title = title;
-    task.status = TaskStatusEnum.OPEN;
-    task.user = user;
+
+    // Create task instance using repository.create
+    const task = this.create({
+      title,
+      description,
+      status: TaskStatusEnum.TODO, // Fixed: Use TODO instead of OPEN
+      createdById: user.id, // Fixed: Use createdById instead of user
+    });
 
     try {
-      await task.save();
+      // Save using repository.save instead of task.save()
+      await this.save(task);
+      return task;
     } catch (error) {
       this.logger.error(
         `Failed to create a task for user "${
@@ -30,16 +34,16 @@ export class TaskRepository extends Repository<Task> {
       );
       throw new InternalServerErrorException();
     }
-
-    delete task.user; //remove userInfo from obj
-    return task;
   }
 
-  async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<any> {
+  async getTasks(filterDto: GetTasksFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
 
-    query.where('task.userId = :userId', { userId: user.id });
+    // Fixed: Use createdById or assigneeId instead of userId
+    query.where('(task.createdById = :userId OR task.assigneeId = :userId)', {
+      userId: user.id,
+    });
 
     if (status) {
       query.andWhere('task.status = :status', { status });
@@ -51,6 +55,7 @@ export class TaskRepository extends Repository<Task> {
         { search: `%${search}%` },
       );
     }
+
     try {
       const tasks = await query.getMany();
       return tasks;

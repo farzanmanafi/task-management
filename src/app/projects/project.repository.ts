@@ -4,7 +4,6 @@ import { CreateProjectDto } from './dto/create-project.dto';
 import { GetProjectFilterDto } from './dto/get-project-filter.dto';
 
 import { ProjectStatusEnum } from './enum/project-status.enum';
-import { UpdateProjectDto } from './dto/update-project.dto';
 import { User } from '../auth/entities/user.entity';
 import { Logger, InternalServerErrorException } from '@nestjs/common';
 
@@ -19,16 +18,20 @@ export class ProjectRepository extends Repository<Project> {
     try {
       const { name, description, status, startDate, endDate } =
         createProjectDto;
-      const project = new Project();
-      project.description = description;
-      project.name = name;
-      project.status = ProjectStatusEnum.DONE;
-      project.startDate = startDate;
-      project.endDate = endDate;
-      project.user;
-      await project.save();
 
-      delete project.user;
+      // Create project instance using repository.create
+      const project = this.create({
+        name,
+        description,
+        status: ProjectStatusEnum.ACTIVE,
+        startDate,
+        endDate,
+        userId: user.id,
+      });
+
+      // Save using repository.save
+      await this.save(project);
+
       return project;
     } catch (error) {
       this.logger.error(

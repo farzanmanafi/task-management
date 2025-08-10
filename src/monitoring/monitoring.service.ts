@@ -1,9 +1,8 @@
-// src/monitoring/monitoring.service.ts
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { CacheService } from '../shared/cache/cache.service';
 import { InjectConnection } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
+import { DataSource } from 'typeorm';
 
 export interface AppMetrics {
   timestamp: string;
@@ -51,7 +50,7 @@ export class MonitoringService {
     private configService: ConfigService,
     private cacheService: CacheService,
     @InjectConnection()
-    private connection: Connection,
+    private connection: DataSource,
   ) {}
 
   async getMetrics(): Promise<AppMetrics> {
@@ -73,7 +72,7 @@ export class MonitoringService {
         system: cpuUsage.system,
       },
       database: {
-        activeConnections: this.connection.driver.pool?.numUsed || 0,
+        activeConnections: this.getActiveConnections(),
         queryCount: this.queryCount,
         avgResponseTime:
           this.queryCount > 0 ? this.totalQueryTime / this.queryCount : 0,
@@ -95,6 +94,20 @@ export class MonitoringService {
             : 0,
       },
     };
+  }
+
+  private getActiveConnections(): number {
+    try {
+      // For newer versions of TypeORM, you might need to access pool differently
+      const driver = this.connection.driver as any;
+      if (driver.pool && driver.pool.numUsed !== undefined) {
+        return driver.pool.numUsed;
+      }
+      return 0;
+    } catch (error) {
+      this.logger.warn('Could not get active connection count');
+      return 0;
+    }
   }
 
   recordRequest(responseTime: number): void {

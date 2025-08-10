@@ -1,4 +1,3 @@
-// src/queue/queue.controller.ts
 import { Controller, Get, Post, Param, UseGuards, Body } from '@nestjs/common';
 import {
   ApiTags,
@@ -10,7 +9,7 @@ import { QueueService } from './queue.service';
 import { JwtAuthGuard } from '../app/auth/guards/jwt-auth.guard';
 import { RoleGuard } from '../app/auth/guards/role.guard';
 import { Roles } from '../app/auth/decorators/roles.decorator';
-import { UserRoleEnum } from '../app/auth/enums/user-role.enum';
+import { UserRoleEnum } from '../app/auth/enum/user-role.enum';
 
 @ApiTags('Queue Management')
 @Controller('queue')

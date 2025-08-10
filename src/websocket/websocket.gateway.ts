@@ -6,8 +6,8 @@ import {
   OnGatewayInit,
   MessageBody,
   ConnectedSocket,
-  WebSocketGateway,
 } from '@nestjs/websockets';
+import { WebSocketGateway as WSGateway } from '@nestjs/websockets';
 
 import { Server, Socket } from 'socket.io';
 import { Logger, UseGuards } from '@nestjs/common';
@@ -27,7 +27,7 @@ interface ConnectedClient {
   lastSeen: Date;
 }
 
-@WebSocketGateway({
+@WSGateway({
   cors: {
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
     credentials: true,

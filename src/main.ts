@@ -64,7 +64,7 @@ async function bootstrap() {
 
     // Setup Bull Board with error handling
     try {
-      const queueService = app.get(QueueService); // Use class token instead of string
+      const queueService = app.get(QueueService);
       if (queueService) {
         const bullBoardAdapter = await setupBullBoard(queueService);
         if (bullBoardAdapter) {
@@ -76,14 +76,16 @@ async function bootstrap() {
       logger.warn('Queue service not available or Bull Board setup failed');
     }
 
-    // Security middleware
+    // Security middleware - relaxed for AdminJS
     app.use(
       helmet({
         contentSecurityPolicy: {
           directives: {
             defaultSrc: ["'self'"],
             styleSrc: ["'self'", "'unsafe-inline'"],
-            scriptSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"], // AdminJS needs these
+            imgSrc: ["'self'", 'data:', 'https:'],
+            fontSrc: ["'self'", 'https:', 'data:'],
             objectSrc: ["'none'"],
             upgradeInsecureRequests: [],
           },
@@ -145,6 +147,7 @@ async function bootstrap() {
 
     if (!appConfigService.isProduction) {
       logger.log(`API Documentation: http://localhost:${port}/api/docs`);
+      logger.log(`Admin Panel: http://localhost:${port}/admin`);
     }
   } catch (error) {
     logger.error('Failed to start application:', error);

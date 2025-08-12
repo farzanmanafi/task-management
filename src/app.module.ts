@@ -35,31 +35,35 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 // Services
 import { AppService } from './app.service';
 
+// Admin Panel
+import { User } from './app/auth/entities/user.entity';
+import { Task } from './app/tasks/entities/task.entity';
+import { Project } from './app/projects/entities/project.entity';
+import { Label } from './app/labels/entities/label.entity';
+
+const { createAdminConfig } = require('./app/admin-pannel/admin.setup.js');
+
 // Optional AdminJS setup with better error handling
 const createAdminModule = () => {
   try {
-    // Dynamic import with CommonJS require
-    const { AdminModule } = eval('require')('@adminjs/nestjs');
-    const AdminJS = eval('require')('adminjs');
-    const { Database, Resource } = eval('require')('@adminjs/typeorm');
+    // Check if AdminJS packages are available
+    const { AdminModule } = require('@adminjs/nestjs');
+    const AdminJS = require('adminjs');
+    const { Database, Resource } = require('@adminjs/typeorm');
 
     // Register the adapter
     AdminJS.registerAdapter({ Database, Resource });
+
+    const entities = { User, Task, Project, Label };
+    const adminConfig = createAdminConfig(entities);
 
     return AdminModule.createAdminAsync({
       inject: [ConfigService],
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        adminJsOptions: {
-          rootPath: '/admin',
-          resources: [],
-          branding: {
-            companyName: 'Task Management System',
-          },
-        },
+        adminJsOptions: adminConfig,
         auth: {
           authenticate: async (email: string, password: string) => {
-            // Simple authentication - replace with your logic
             const adminEmail = configService.get(
               'ADMIN_EMAIL',
               'admin@taskmanagement.com',
@@ -91,7 +95,7 @@ const createAdminModule = () => {
   } catch (error) {
     console.warn('AdminJS packages not found. Admin panel will be disabled.');
     console.warn(
-      'To enable admin panel, run: npm install @adminjs/nestjs @adminjs/typeorm adminjs',
+      'To enable admin panel, run: npm install @adminjs/nestjs @adminjs/typeorm adminjs @adminjs/express express-session express-formidable',
     );
     return null;
   }
@@ -120,7 +124,6 @@ const adminModule = createAdminModule();
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => [
-        // <--- Wrap the object in an array
         {
           ttl: Number(configService.get('RATE_LIMIT_TTL', 60)),
           limit: Number(configService.get('RATE_LIMIT_LIMIT', 100)),
@@ -179,7 +182,9 @@ export class AppModule {
       console.log(
         'ℹ️  Admin panel is disabled. To enable it, install AdminJS packages:',
       );
-      console.log('   npm install @adminjs/nestjs @adminjs/typeorm adminjs');
+      console.log(
+        '   npm install @adminjs/nestjs @adminjs/typeorm adminjs @adminjs/express express-session express-formidable',
+      );
     } else {
       console.log('✅ Admin panel is available at /admin');
     }

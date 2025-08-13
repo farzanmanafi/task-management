@@ -12,6 +12,9 @@ import { ProjectsModule } from './app/projects/projects.module';
 import { LabelsModule } from './app/labels/labels.module';
 import { AuthModule } from './app/auth/auth.module';
 
+// Admin Panel
+import { AdminPannelModule } from './app/admin-pannel/admin-panel.module';
+
 // Shared modules
 import { CacheModule } from './shared/cache/cache.module';
 import { SharedModule } from './shared/modules/shared.module';
@@ -34,6 +37,18 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 
 // Services
 import { AppService } from './app.service';
+
+// Create AdminJS module conditionally
+function createAdminJSImport() {
+  try {
+    return AdminPannelModule.forRootAsync();
+  } catch (error) {
+    console.warn('AdminJS packages not found. Admin panel will be disabled.');
+    return null;
+  }
+}
+
+const adminModule = createAdminJSImport();
 
 @Module({
   imports: [
@@ -92,6 +107,9 @@ import { AppService } from './app.service';
     QueueModule,
     WebSocketModule,
     MonitoringModule,
+
+    // Admin Panel (conditionally)
+    ...(adminModule ? [adminModule] : []),
   ],
   providers: [
     AppService,
@@ -108,9 +126,14 @@ import { AppService } from './app.service';
 export class AppModule {
   constructor() {
     console.log('✅ Task Management API started successfully');
-    console.log(
-      'ℹ️  Admin panel is disabled. To enable it, install AdminJS packages.',
-    );
+    if (adminModule) {
+      console.log('✅ Admin panel available at /admin');
+      console.log('   Default login: admin@taskmanagement.com / admin123');
+    } else {
+      console.log(
+        'ℹ️  Admin panel is disabled. AdminJS packages not available.',
+      );
+    }
   }
 }
 

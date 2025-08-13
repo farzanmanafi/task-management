@@ -16,7 +16,7 @@ try {
   // Register the adapter
   AdminJS.registerAdapter({ Database, Resource });
 } catch (error) {
-  console.warn('AdminJS packages not available');
+  console.warn('AdminJS packages not available', error);
 }
 
 export interface AdminEntities {

@@ -16,6 +16,13 @@ export class ApiResponseDto<T> {
 
   @ApiProperty({ example: 200 })
   statusCode: number;
+
+  meta?: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
 }
 
 export class ApiErrorResponseDto {

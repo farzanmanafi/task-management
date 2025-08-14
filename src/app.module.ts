@@ -1,5 +1,4 @@
-// src/app.module.ts
-import { Module, Logger } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { EventEmitterModule } from '@nestjs/event-emitter';
@@ -13,10 +12,6 @@ import { ProjectsModule } from './app/projects/projects.module';
 import { LabelsModule } from './app/labels/labels.module';
 import { AuthModule } from './app/auth/auth.module';
 
-// Admin modules - both options available
-// import { AdminModule } from './app/admin/admin.module'; // Custom admin (recommended)
-// import { AdminPanelModule } from './app/admin-panel/admin-panel.module'; // AdminJS option
-
 // Shared modules
 import { CacheModule } from './shared/cache/cache.module';
 import { SharedModule } from './shared/modules/shared.module';
@@ -29,6 +24,9 @@ import { QueueModule } from './queue/queue.module';
 import { WebSocketModule } from './websocket/websocket.module';
 import { MonitoringModule } from './monitoring/monitoring.module';
 
+// Admin module
+import { ForestAdminModule } from './admin/forest-admin.module';
+
 // Configuration
 import { getDatabaseConfig } from './config/database.config';
 import { AppConfigModule } from './config/config.module';
@@ -39,47 +37,6 @@ import { ThrottlerGuard } from '@nestjs/throttler';
 
 // Services
 import { AppService } from './app.service';
-import { AdminPannelModule } from './app/admin-pannel/admin-panel.module';
-import { AdminModule } from './app/admin-pannel/admin.module';
-
-// Admin panel configuration
-const getAdminModules = () => {
-  const logger = new Logger('AdminSetup');
-
-  // Option 1: Try AdminJS (advanced but complex)
-  let adminJSModule = null;
-  try {
-    // Check if AdminJS packages are available
-    require('@adminjs/nestjs');
-    require('adminjs');
-    require('@adminjs/typeorm');
-
-    adminJSModule = AdminPannelModule.forRootAsync();
-    if (adminJSModule) {
-      logger.log('✅ AdminJS panel initialized successfully');
-      logger.log('   Available at: /admin');
-      logger.log('   Login: admin@taskmanagement.com / admin123');
-    }
-  } catch (error) {
-    logger.warn('⚠️  AdminJS packages not found or incompatible');
-    logger.warn(
-      '   Install with: npm install @adminjs/nestjs adminjs @adminjs/typeorm',
-    );
-  }
-
-  // Option 2: Custom admin panel (recommended - always available)
-  logger.log('✅ Custom admin panel initialized');
-  logger.log('   Available at: /admin (API endpoints)');
-  logger.log('   Requires admin role authentication');
-
-  // Return available modules
-  const modules = [AdminModule]; // Always include custom admin
-  if (adminJSModule) {
-    modules.push(adminJSModule);
-  }
-
-  return modules;
-};
 
 @Module({
   imports: [
@@ -139,8 +96,8 @@ const getAdminModules = () => {
     WebSocketModule,
     MonitoringModule,
 
-    // Admin modules
-    ...getAdminModules(),
+    // Admin module
+    ForestAdminModule,
   ],
   providers: [
     AppService,
@@ -155,13 +112,9 @@ const getAdminModules = () => {
   ],
 })
 export class AppModule {
-  private readonly logger = new Logger(AppModule.name);
-
   constructor() {
-    this.logger.log('🚀 Task Management API started successfully');
-    this.logger.log('📚 API Documentation: /api/docs');
-    this.logger.log('🏥 Health Check: /health');
-    this.logger.log('👤 Admin Panel: /admin');
-    this.logger.log('📊 Queue Monitor: /admin/queues (if available)');
+    console.log('✅ Task Management API started successfully');
   }
 }
+
+export default AppModule;
